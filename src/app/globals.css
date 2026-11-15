@@ -1,0 +1,65 @@
+@import "tailwindcss";
+
+@theme {
+
+  /* Typography : Clamps */
+  --text-xxlg: clamp(40px, calc(32.96px + 1.878vw), 60px);
+  --text-xlg: clamp(28px, calc(23.77px + 1.127vw), 40px);
+  --text-lg-custom: clamp(22px, calc(18.48px + 0.939vw), 32px);
+  --text-md-custom: clamp(18px, calc(15.89px + 0.563vw), 24px);
+  --text-sm-custom: clamp(16px, calc(14.59px + 0.376vw), 20px);
+  --text-xsm: clamp(16px, calc(15.30px + 0.188vw), 18px);
+  --text-xxsm: clamp(14px, calc(13.30px + 0.188vw), 16px);
+}
+
+:root {
+
+  /* Default Theme Colors : RGB Value */
+  --deep: 9, 14, 29;
+  --canvas: 16, 28, 59;
+  --surface: 29, 49, 90;
+  --accent: 136, 157, 199;
+  --body: 220, 232, 255;
+  --header: 243, 242, 255;
+  --secondary: 66, 153, 204;
+  --primary: 164, 154, 233;
+
+  --eclipse: 197, 41, 60;
+  --eclipse-text: 255, 219, 219;
+  --accent-blue: 95, 179, 288; /* Info */
+  --accent-green: 142, 235, 135; /* Success */
+  --accent-yellow: 236, 205, 112; /* Warning */
+  --accent-orange: 216, 153, 111;
+  --accent-red: 217, 72, 72; /* Error */
+
+  --pure-light: 255, 255, 255;
+  --pure-dark: 0, 0, 0;
+
+  --text: rgb( var( var(--body) ) );
+  --body-bg: radial-gradient(at top left, rgb( var( --canvas ) ), rgb( var( --deep ) ));
+  --container-bg: radial-gradient(at top left, rgb( var( --surface ) ), rgb( var( --canvas ) ));
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-dm-sans);
+  --font-display: var(--font-fraunces-display);
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --text: rgb( var( var(--deep) ) );
+    --body-bg: radial-gradient(at top left, rgb( var( --pure-light ) ), rgb( var( --body ) ));
+    --container-bg: radial-gradient(at top left, rgb( var( --body ) ), rgb( var( --secondary ) ));
+  }
+}
+
+body {
+  background: var(--body-bg);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  height:100vh;
+  color: var(--text);
+  font-family: var(--font-sans), sans-serif;
+}
