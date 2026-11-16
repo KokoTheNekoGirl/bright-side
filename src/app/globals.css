@@ -1,4 +1,7 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+
+/* Now lets get set up! */
 
 @theme {
 
@@ -10,6 +13,21 @@
   --text-sm-custom: clamp(16px, calc(14.59px + 0.376vw), 20px);
   --text-xsm: clamp(16px, calc(15.30px + 0.188vw), 18px);
   --text-xxsm: clamp(14px, calc(13.30px + 0.188vw), 16px);
+
+  /* Moon : 100px @ 375px / 400px @ 1440px */
+  --spacing-moon: clamp(100px, calc(-5.63px + 28.169vw), 150px);
+
+  /* Animations */
+  --animate-brush-wipe: brush-wipe 0.9s cubic-bezier(0.65, 0, 0.35, 1) 0.4s both;
+
+  @keyframes brush-wipe {
+    from { clip-path: inset(0 100% 0 0); }
+    to   { clip-path: inset(0 0 0 0); }
+  }
+}
+
+* {
+  transition: 0.5s all ease-out;
 }
 
 :root {
@@ -26,7 +44,7 @@
 
   --eclipse: 197, 41, 60;
   --eclipse-text: 255, 219, 219;
-  --accent-blue: 95, 179, 288; /* Info */
+  --accent-blue: 95, 179, 228; /* Info */
   --accent-green: 142, 235, 135; /* Success */
   --accent-yellow: 236, 205, 112; /* Warning */
   --accent-orange: 216, 153, 111;
@@ -35,9 +53,13 @@
   --pure-light: 255, 255, 255;
   --pure-dark: 0, 0, 0;
 
-  --text: rgb( var( var(--body) ) );
-  --body-bg: radial-gradient(at top left, rgb( var( --canvas ) ), rgb( var( --deep ) ));
-  --container-bg: radial-gradient(at top left, rgb( var( --surface ) ), rgb( var( --canvas ) ));
+  --moon-glow-alpha: 0.5;
+
+  ::selection, ::-moz-selection {
+    background-color: rgb( var( --primary ) );
+    color: rgb( var( --pure-dark ) );
+    text-shadow: unset!important;
+  }
 }
 
 @theme inline {
@@ -45,21 +67,225 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-dm-sans);
   --font-display: var(--font-fraunces-display);
+
+  --color-deep: rgb(var(--deep));
+  --color-canvas: rgb(var(--canvas));
+  --color-surface: rgb(var(--surface));
+  --color-accent: rgb(var(--accent));
+  --color-body: rgb(var(--body));
+  --color-heading: rgb(var(--header));
+  --color-secondary: rgb(var(--secondary));
+  --color-primary: rgb(var(--primary));
+  --color-eclipse: rgb(var(--eclipse));
+  --color-eclipse-text: rgb(var(--eclipse-text));
+
+  /* shadow-card, text-shadow-canvas, text-shadow-surface */
+  --shadow-card: 8px 8px 20px 0 rgba(var(--deep), 0.5);
+  --text-shadow-canvas: 0 0 10px rgb(var(--canvas));
+  --text-shadow-surface: 0 0 10px rgb(var(--surface));
+}
+
+@utility bg-container {
+  background: var(--container-bg);
+}
+
+[data-phase="full"],
+[data-phase="blue"] {
+  --moon-glow-alpha: 1;
+}
+
+@utility moon-glow {
+  filter: drop-shadow(0 0 50px rgba(var(--primary), var(--moon-glow-alpha)));
+}
+
+:root, body {
+  --text: rgb( var(--body) );
+  --body-bg: radial-gradient(at top left, rgb( var(--canvas) ), rgb( var(--deep) ));
+  --container-bg: radial-gradient(at top left, rgb( var(--surface) ), rgb( var(--canvas) ));
+}
+
+body[data-moon-mode="eclipse"] {
+  --primary: var(--eclipse);
+  --header: var(--eclipse-text);
+  --surface: 58, 33, 62;
+  --canvas: 30, 20, 42;
+  --deep: 14, 9, 22;
+}
+
+body[data-moon-mode="blue"] {
+  --primary: var(--accent-blue);
+  --surface: 26, 62, 112;
+  --canvas: 13, 33, 70;
+  --deep: 6, 14, 34;
 }
 
 @media (prefers-color-scheme: light) {
-  :root {
-    --text: rgb( var( var(--deep) ) );
-    --body-bg: radial-gradient(at top left, rgb( var( --pure-light ) ), rgb( var( --body ) ));
-    --container-bg: radial-gradient(at top left, rgb( var( --body ) ), rgb( var( --secondary ) ));
+  :root, body {
+    --text: rgb( var(--deep) );
+    --body-bg: radial-gradient(at top left, rgb( var(--pure-light) ), rgb( var(--body) ));
+    --container-bg: radial-gradient(at top left, rgb( var(--body) ), rgb( var(--secondary) ));
   }
+}
+
+/* Typography ~ */
+h1, .h1, .xxlg-heading {
+  font-size: var(--text-xxlg);
+  line-height: 80%;
+  font-family: var(--font-display);
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: -2%;
+  color: rgb( var( --header ) );
+}
+
+h2, .h2, .xlg-heading {
+  font-size: var(--text-xlg);
+  line-height: 115%;
+  font-family: var(--font-display);
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: -2%;
+  color: rgb( var( --header ) );
+}
+
+h3, .h3, .lg-heading {
+  font-size: var(--text-lg-custom);
+  line-height: 80%;
+  font-family: var(--font-display);
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: -4%;
+  color: rgb( var( --header ) );
+}
+
+h4, .h4, .md-heading  {
+  font-size: var(--text-md-custom);
+  line-height: 115%;
+  font-family: var(--font-sans);
+  font-style: normal;
+  font-weight: 600;
+  letter-spacing: 0%;
+  color: rgb( var( --header ) );
+}
+
+h5, .h5, .sm-heading  {
+  font-size: var(--text-sm-custom);
+  line-height: 115%;
+  font-family: var(--font-sans);
+  font-style: normal;
+  font-weight: 500;
+  letter-spacing: 0%;
+  color: rgb( var( --header ) );
+}
+  
+p, .p , p *, .p *, button  {
+  font-size: var(--text-xsm-custom);
+  line-height: 115%;
+  letter-spacing: 0%;
+  font-family: var(--font-sans);
+  font-weight: 500;
+  strong {
+    font-weight: bolder;
+  }
+}
+
+.md-subheading  {
+  font-size: var(--text-md-custom);
+  line-height: 1;
+  font-family: var(--font-sans);
+  font-style: italic;
+  font-weight: 600;
+  letter-spacing: 0%;
+  text-transform: uppercase;
+  color: rgb( var( --primary ) );
+}
+
+.meta-text {
+  font-size: var(--text-xsm-custom);
+  line-height: 115%;
+  letter-spacing: 0%;
+  font-family: var(--font-sans);
+  font-style: normal;
+  font-weight: 400;
+  text-transform: lowercase;
+  color: var( rgb( --accent ));
 }
 
 body {
   background: var(--body-bg);
   background-size: 100% 100%;
   background-repeat: no-repeat;
-  height:100vh;
+  background-attachment: fixed;
+  min-height: 100vh;
+  max-width: 100vw;
   color: var(--text);
   font-family: var(--font-sans), sans-serif;
+  transition: background-color 0.6s ease;
+}
+
+/* Space is very pretty */
+
+.nebula {
+  background:
+    radial-gradient(40% 50% at 15% 20%, rgba(var(--primary), 0.22), transparent 70%),
+    radial-gradient(35% 45% at 85% 15%, rgba(var(--secondary), 0.18), transparent 70%),
+    radial-gradient(50% 40% at 70% 85%, rgba(var(--accent), 0.55), transparent 70%),
+    radial-gradient(45% 50% at 25% 90%, rgba(var(--primary), 0.12), transparent 70%);
+}
+
+.nebula::before,
+.nebula::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+.nebula::before {
+  background-image:
+    radial-gradient(1px 1px at 20px 30px, rgb(var(--pure-light)) 50%, transparent 51%),
+    radial-gradient(1px 1px at 140px 90px, rgba(var(--canvas), 0.8) 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 60px 170px, rgb(var(--pure-light)) 50%, transparent 51%),
+    radial-gradient(1px 1px at 190px 220px, rgba(var(--canvas), 0.7) 50%, transparent 51%);
+  background-size: 211px 241px, 293px 271px, 337px 313px, 379px 353px;
+  opacity: 0.7;
+}
+
+.nebula::after {
+  background-image:
+    radial-gradient(2px 2px at 80px 50px, rgb(var(--pure-light)) 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 230px 160px, rgba(var(--primary), 0.9) 50%, transparent 51%);
+  background-size: 457px 419px, 523px 487px;
+  animation: twinkle 6s ease-in-out infinite alternate;
+}
+
+@keyframes twinkle {
+  from { opacity: 0.25; }
+  to   { opacity: 0.9; }
+}
+
+/* Time for some responsivity */
+
+/* Accessibility for all is a human right */
+
+.sr-only {
+  position:    absolute !important;
+  overflow:    hidden   !important;
+  white-space: nowrap   !important;
+  width:   1px !important;
+  height:  1px !important;
+  margin: -1px !important;
+  padding: 0   !important;
+  border:  0   !important;
+  clip: rect(1px 1px 1px 1px) !important;
+  -webkit-clip-path: inset(50%) !important;
+  clip-path: inset(50%) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .nebula::after { animation: none; opacity: 0.6; }
 }

@@ -1,10 +1,9 @@
-// import Image from "next/image";
-// import { SITE_TITLE } from '@/consts';
+import HomeView from '@/components/HomeView';
+import { getMoonState } from '@/lib/moon';
+
+// Keep in step with layout.tsx
+export const revalidate = 3600;
 
 export default function Home() {
-  return (
-    <main itemProp="mainContentOfPage">
-      <div></div>
-    </main>
-  );
+  return <HomeView moon={getMoonState()} />;
 }
