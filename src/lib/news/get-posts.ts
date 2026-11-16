@@ -2,7 +2,7 @@ import Parser from 'rss-parser';
 import { MoonPhase } from 'astronomy-engine';
 import type { MoonState } from '@/lib/moon';
 import { categorise, type CategoryId } from './categories';
-import { isBlocked, isGraphic } from './content';
+import { isBlocked, isExcluded, isGraphic } from './content';
 import { CURATION } from './curation';
 import { SAMPLE_POSTS } from './sample-posts';
 import { SOURCES, type Source } from './sources';
@@ -119,6 +119,8 @@ async function fetchSource(source: Source): Promise<Post[]> {
     const both = `${title} ${text}`;
 
     if (source.filterNegative && !curation.pin && isBlocked(both)) return [];
+    const tags = tagsOf(item);
+    if (!curation.pin && isExcluded(`${both} ${tags.join(' ')}`)) return [];
 
     const tone = curation.tone ?? source.fixedTone ?? classifyTone(title, text);
     const graphic = curation.graphic ?? isGraphic(both, tone);

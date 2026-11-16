@@ -54,7 +54,7 @@ export default function PostCard({ post }: { post: Post }) {
       data-source={post.source.id}
       data-kind={post.kind}
       data-graphic={post.graphic || undefined}
-      className="post-card flex w-full md:max-w-fit flex-col items-start gap-2 overflow-hidden rounded-xl bg-radial-[at_36%_11%] from-surface to-canvas px-7 py-5 shadow-card outline-2 outline-secondary"
+      className="post-card flex w-full md:max-w-fit flex-col items-start gap-2.5 overflow-hidden rounded-xl bg-radial-[at_36%_11%] from-surface to-canvas px-7 py-5 shadow-card outline-2 outline-secondary"
     >
       <div className="flex flex-wrap gap-x-3 gap-y-1">
         {post.categories.map((id) => (
@@ -68,7 +68,7 @@ export default function PostCard({ post }: { post: Post }) {
           <h3 className="sr-only">
             <ExternalLink href={post.url}>{post.title}</ExternalLink>
           </h3>
-          <div className="my-2 w-full">
+          <div className="my-2 w-[600px]">
             <VideoEmbed videoId={post.videoId} title={post.title} sensitive={post.graphic} />
           </div>
           <PostMeta post={post} />

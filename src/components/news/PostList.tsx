@@ -7,7 +7,7 @@ export default function PostList({ posts, emptyMessage }: { posts: Post[]; empty
   if (!posts.length) return <EmptyState message={emptyMessage} />;
 
   return (
-    <ul role="list" className="post-list flex flex-col gap-10">
+    <ul role="list" className="post-list flex flex-col items-center gap-10">
       {posts.map((post) => (
         <li key={post.id}>
           <PostCard post={post} />

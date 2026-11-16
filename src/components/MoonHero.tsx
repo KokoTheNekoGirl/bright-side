@@ -25,7 +25,7 @@ export default function MoonHero({ moon }: { moon: MoonState }) {
       aria-labelledby="moon-hero-heading"
       data-phase={moon.image}
       data-theme={moon.theme}
-      className="moon-hero relative mx-auto flex w-full md:max-w-fit flex-col items-center gap-2.5 overflow-hidden rounded-[20px] bg-container px-6 py-7 text-center shadow-card outline-2 -outline-offset-1 outline-primary sm:px-12 md:text-left"
+      className="moon-hero relative mx-auto flex w-full mb-2.5 md:max-w-fit flex-col items-center gap-2.5 overflow-hidden rounded-[20px] bg-container px-6 py-7 text-center shadow-card outline-2 -outline-offset-1 outline-primary sm:px-12 md:text-left"
     >
       <div aria-hidden="true" className="nebula pointer-events-none h-full w-full absolute inset-0 overflow-hidden" />
       <Image

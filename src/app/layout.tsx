@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Fraunces, DM_Sans } from "next/font/google";
 import "./globals.css";
 import { getImageProps } from "next/image";
@@ -46,11 +47,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body data-moon-mode={moon.mode} className="min-h-screen overflow-x-hidden flex flex-col">
         <header className="flex justify-between items-center px-3 py-2.5 gap-2.5">
-          <picture>
+          <Link href="/"><picture>
           <source media="(min-width: 64rem)" srcSet={logoDesktop} />
           {/* eslint-disable-next-line jsx-a11y/alt-text */}
           <img {...logoMobile} className="h-[70px] w-auto lg:h-[94px]" />
-        </picture>
+        </picture></Link>
           <nav id="site-nav" className="site-nav" aria-label="Main" itemScope itemType="https://schema.org/SiteNavigationElement">
             {/* <button id="menu-toggle" className="menu-toggle" type="button" aria-expanded="false" aria-controls="menu-list" aria-label="Open main menu">
                 <i id="menu-icon" className="fa-solid" aria-hidden="true"></i>

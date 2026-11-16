@@ -178,7 +178,7 @@ h5, .h5, .sm-heading  {
   color: rgb( var( --header ) );
 }
   
-p, .p , p *, .p *, button  {
+p, .p, button  {
   font-size: var(--text-xsm-custom);
   line-height: 115%;
   letter-spacing: 0%;

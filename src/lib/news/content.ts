@@ -28,3 +28,16 @@ export const isBlocked = (text: string) => text.search(blocked) !== -1;
 
 /** Somber + sensitive words → graphic. Upbeat posts that mention e.g. "deaths fell" aren't tagged. */
 export const isGraphic = (text: string, tone: Tone) => tone === 'reflection' && text.search(graphic) !== -1;
+
+/**
+ * Topics Bright Side skips entirely, from every source and including the feed's own tags.
+ * Same matching rules: whole words, * = starts with.
+ */
+export const EXCLUDE_KEYWORDS = [
+  'ai', 'artificial intelligence', 'machine learning', 'deep learning', 'neural network',
+  'large language model', 'llm', 'generative', 'chatbot', 'chatgpt', 'computer vision', 'algorithm*',
+];
+
+const excluded = keywordMatcher(EXCLUDE_KEYWORDS);
+
+export const isExcluded = (text: string) => text.search(excluded) !== -1;
