@@ -79,7 +79,7 @@ export default function PostCard({ post }: { post: Post }) {
           <h3 className="md-heading lowercase mb-1">
             <ExternalLink href={post.url} className="group brush-link relative inline-flex items-start gap-2.5 hover:drop-shadow-[0_0_15px_rgb(var(--primary))]">
               {post.title}
-              <BrushStroke />
+              <BrushStroke className="text-primary"/>
               <ArrowUpRightIcon
                 aria-hidden="true"
                 className="mt-1 size-6 shrink-0 text-primary transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 motion-reduce:transition-none"
