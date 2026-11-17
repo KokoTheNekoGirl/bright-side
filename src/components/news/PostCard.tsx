@@ -4,6 +4,7 @@ import type { Post } from '@/lib/news/get-posts';
 import { SITE_TIMEZONE } from '@/consts';
 import CategoryTag from './CategoryTag';
 import VideoEmbed from './VideoEmbed';
+import BrushStroke from '@/components/BrushStroke';
 
 function ordinal(n: number) {
   const rule = new Intl.PluralRules('en', { type: 'ordinal' }).select(n);
@@ -32,11 +33,11 @@ function PostMeta({ post }: { post: Post }) {
 
   return (
     <p className="flex flex-wrap items-center gap-x-2.5 leading-5 text-accent">
-      <span className="inline-flex items-center gap-[5px]">
+      <ExternalLink href={post.source.homepage} className="source-link inline-flex items-center gap-[5px]">
         <SourceIcon aria-hidden="true" className="size-4" />
         <span className="sr-only">{post.kind === 'video' ? 'Channel: ' : 'Source: '}</span>
         {post.source.name}
-      </span>
+      </ExternalLink>
       {post.date && (
         <span className="inline-flex items-center gap-[5px]">
           <CalendarStarIcon aria-hidden="true" className="size-4" />
@@ -68,19 +69,20 @@ export default function PostCard({ post }: { post: Post }) {
           <h3 className="sr-only">
             <ExternalLink href={post.url}>{post.title}</ExternalLink>
           </h3>
-          <div className="my-2 w-[600px]">
+          <div className="my-2 w-full md:min-w-[600px]">
             <VideoEmbed videoId={post.videoId} title={post.title} sensitive={post.graphic} />
           </div>
           <PostMeta post={post} />
         </>
       ) : (
         <>
-          <h3 className="text-2xl leading-7 text-heading">
-            <ExternalLink href={post.url} className="group inline-flex items-start gap-2.5 hover:text-primary">
+          <h3 className="md-heading lowercase mb-1">
+            <ExternalLink href={post.url} className="group brush-link relative inline-flex items-start gap-2.5 hover:text-primary hover:drop-shadow-[0_0_15px_rgb(var(--primary))]">
               {post.title}
+              <BrushStroke />
               <ArrowUpRightIcon
                 aria-hidden="true"
-                className="mt-1 size-5 shrink-0 text-primary transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 motion-reduce:transition-none"
+                className="mt-1 size-6 shrink-0 text-primary transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 motion-reduce:transition-none"
               />
             </ExternalLink>
           </h3>
@@ -92,10 +94,10 @@ export default function PostCard({ post }: { post: Post }) {
               // Content warning: summary hidden until opened (works without JavaScript <3)
               <details className="content-warning leading-5 text-body">
                 <summary className="cursor-pointer text-eclipse-text">Content warning: show summary</summary>
-                <p className="mt-1">{post.excerpt}</p>
+                <p className="mt-1 min-w-fit w-0">{post.excerpt}</p>
               </details>
             ) : (
-              <p className="leading-5 text-body">{post.excerpt}</p>
+              <p className="min-w-fit w-0">{post.excerpt}</p>
             ))}
         </>
       )}

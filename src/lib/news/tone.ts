@@ -127,3 +127,16 @@ export function classifyTone(title: string, description = ''): Tone {
   }
   return best;
 }
+
+/** New moon or eclipse: the somber side of the site. */
+export const isReflectionTheme = (theme: MoonTheme) => THEME_TONE[theme] === 'reflection';
+
+/** /news heading per moon: underlined subheading + title. */
+export const NEWS_HEADING: Record<MoonTheme, { subheading: string; title: string }> = {
+  grow: { subheading: 'Growth', title: 'Good News' },
+  celebrate: { subheading: 'Celebrate', title: 'Good News' },
+  appreciate: { subheading: 'Appreciate', title: 'Good News' },
+  blue: { subheading: 'Rejoice', title: 'Good News' },
+  reflect: { subheading: 'Reflection', title: 'Somber News' },
+  eclipse: { subheading: 'Reflect Deeply', title: 'Somber News' },
+};

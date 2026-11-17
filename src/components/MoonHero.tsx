@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import type { MoonState } from '@/lib/moon';
 import { getHeroContent, splitHighlights } from '@/lib/moon-content';
+import BrushStroke from '@/components/BrushStroke';
 
 const MOON_ALT: Record<MoonState['image'], string> = {
   new: 'New moon',
@@ -28,6 +29,18 @@ export default function MoonHero({ moon }: { moon: MoonState }) {
       className="moon-hero relative mx-auto flex w-full mb-2.5 md:max-w-fit flex-col items-center gap-2.5 overflow-hidden rounded-[20px] bg-container px-6 py-7 text-center shadow-card outline-2 -outline-offset-1 outline-primary sm:px-12 md:text-left"
     >
       <div aria-hidden="true" className="nebula pointer-events-none h-full w-full absolute inset-0 overflow-hidden" />
+      <span
+        className="moon-stats font-display text-md-custom text-semibold text-primary tabular-nums"
+        aria-label={`${(moon.illumination * 100).toFixed(1)} percent illuminated, phase angle ${moon.phaseAngle.toFixed(1)} degrees`}
+      >
+        <span className="flex items-center gap-1" aria-hidden="true">
+          {(moon.illumination * 100).toFixed(1)} % 
+          <span aria-hidden="true" className="inline-block drop-shadow-[0_0_25px_rgb(var(--primary))]">
+            <span className="block h-6 w-5 bg-heading [mask:url(/assets/star.svg)_center/contain_no-repeat]" />
+          </span>
+          {moon.phaseAngle.toFixed(1)}°
+        </span>
+      </span>
       <Image
         src={`/assets/phases/${moon.image}.svg`}
         alt={MOON_ALT[moon.image]}
@@ -44,7 +57,7 @@ export default function MoonHero({ moon }: { moon: MoonState }) {
             part.highlight ? (
               <span key={i} className="relative inline-block">
                 {part.text}
-                <span aria-hidden="true" className="pointer-events-none h-[5px] absolute -bottom-1.5 -left-0 w-[calc(100%+1rem)] aspect-[20/1] bg-current [mask:url(/assets/brush.svg)_center/100%_100%_no-repeat] animate-brush-wipe motion-reduce:animate-none"/>
+                <BrushStroke className="animate-brush-wipe motion-reduce:animate-none" />
               </span>
             ) : (
               part.text

@@ -23,7 +23,7 @@ type ContentFn = (state: MoonState) => HeroContent;
 
 const CONTENT: Record<MoonTheme, ContentFn> = {
   grow: ({ image }) => ({
-    eyebrow: 'Look on the Bright Side & *Grow*',
+    eyebrow: 'Look on the Bright✦Side & *Grow*',
     heading: 'Good Things Are Coming.',
     body: `${
       image === 'first' ? 'It’s the first half of a new cycle'
@@ -33,7 +33,7 @@ const CONTENT: Record<MoonTheme, ContentFn> = {
   }),
 
   appreciate: ({ image }) => ({
-    eyebrow: 'Look on the Bright Side & *Appreciate*',
+    eyebrow: 'Look on the Bright✦Side & *Appreciate*',
     heading: 'A Little Gratitude Goes A Long Way.',
     body: `${
       image === 'wan-gibbous' ? 'The full moon just passed'
@@ -43,13 +43,13 @@ const CONTENT: Record<MoonTheme, ContentFn> = {
   }),
 
   celebrate: ({ timing }) => ({
-    eyebrow: 'Look on the Bright Side & *Celebrate*',
+    eyebrow: 'Look on the Bright✦Side & *Celebrate*',
     heading: 'A Little More Hope, Every Day.',
     body: `${when(timing, 'Tomorrow night is', 'Tonight is', 'Last night was')} a full moon, let’s focus on *celebrating* the achievements we’ve accomplished this month.`,
   }),
 
   blue: ({ timing }) => ({
-    eyebrow: 'Look on the Bright Side & *Rejoice*',
+    eyebrow: 'Look on the Bright✦Side & *Rejoice*',
     heading: 'Once In A Blue Moon, We Cheer.',
     body: `${when(timing, 'Tomorrow night is', 'Tonight is', 'Last night was')} a rare *blue moon*, where we celebrate on all the best news this past year. These aren’t rare, they’re precious.`,
   }),

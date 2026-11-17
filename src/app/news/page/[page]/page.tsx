@@ -16,7 +16,7 @@ function parsePage(raw: string) {
 
 export async function generateMetadata({ params }: PageProps<'/news/page/[page]'>): Promise<Metadata> {
   const { page } = await params;
-  return { title: `Good news, page ${page} | Look on the Bright Side` };
+  return { title: `Good News, page ${page}` };
 }
 
 export default async function NewsPagedPage({ params }: PageProps<'/news/page/[page]'>) {

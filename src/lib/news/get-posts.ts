@@ -4,7 +4,6 @@ import type { MoonState } from '@/lib/moon';
 import { categorise, type CategoryId } from './categories';
 import { isBlocked, isExcluded, isGraphic } from './content';
 import { CURATION } from './curation';
-import { SAMPLE_POSTS } from './sample-posts';
 import { SOURCES, type Source } from './sources';
 import { classifyTone, THEME_TONE, type Tone } from './tone';
 
@@ -163,12 +162,9 @@ function sortPosts(posts: Post[]): Post[] {
 /**
  * All enabled sources, merged, de-duplicated, pinned first then newest first.
  * A feed that fails is logged and skipped, so one bad source never blanks the page.
- *
- * Dev only: NEWS_PREVIEW=sample shows sample posts, NEWS_PREVIEW=empty shows none.
  */
 export async function getPosts(): Promise<Post[]> {
   const preview = process.env.NODE_ENV !== 'production' ? process.env.NEWS_PREVIEW : undefined;
-  if (preview === 'sample') return sortPosts(SAMPLE_POSTS);
   if (preview === 'empty') return [];
 
   const results = await Promise.allSettled(
@@ -205,18 +201,28 @@ function featureWindowStart(moon: MoonState, now = new Date()): Date {
   return new Date(now.getTime() - (daysSinceNew + 1.5) * DAY_MS);
 }
 
+/** All posts whose tone matches the moon, inside its window (newest first). */
+async function featuredMatches(moon: MoonState): Promise<Post[]> {
+  const tone = THEME_TONE[moon.theme];
+  const since = featureWindowStart(moon).getTime();
+  return (await getPosts()).filter(
+    (p) => p.tone === tone && (p.pinned || (p.date?.getTime() ?? 0) >= since),
+  );
+}
+
+/** Every post whose tone matches the moon, any date (the "featured" filter on /news). */
+async function allFeatured(moon: MoonState): Promise<Post[]> {
+  const tone = THEME_TONE[moon.theme];
+  return (await getPosts()).filter((p) => p.tone === tone);
+}
+
 /**
  * Home page posts: tone matches the moon, from this cycle.
  * Normal moons: up to HOME_LIMIT, no paging.
  * Blue moon / eclipse: the whole past year, HOME_LIMIT per page.
  */
 export async function getFeaturedPosts(moon: MoonState, page = 1) {
-  const tone = THEME_TONE[moon.theme];
-  const since = featureWindowStart(moon).getTime();
-  const matches = (await getPosts()).filter(
-    (p) => p.tone === tone && (p.pinned || (p.date?.getTime() ?? 0) >= since),
-  );
-
+  const matches = await featuredMatches(moon);
   const paginated = moon.mode !== 'default';
   const totalPages = paginated ? Math.max(1, Math.ceil(matches.length / HOME_LIMIT)) : 1;
   const start = paginated ? (page - 1) * HOME_LIMIT : 0;
@@ -224,9 +230,22 @@ export async function getFeaturedPosts(moon: MoonState, page = 1) {
   return { posts: matches.slice(start, start + HOME_LIMIT), page, totalPages, paginated };
 }
 
-/** One page of the full archive. Page numbers start at 1. */
-export async function getPostsPage(page: number, perPage = PER_PAGE) {
-  const posts = await getPosts();
+/** What /news can be filtered by: a category, or 'featured' (the home page's picks). */
+export type NewsFilter = Exclude<CategoryId, 'graphic'> | 'featured';
+
+/** Reflection posts only appear while the moon asks for them: new moon or eclipse. */
+const showsReflection = (moon?: MoonState) => !!moon && THEME_TONE[moon.theme] === 'reflection';
+
+/** One page of the archive, optionally filtered. Page numbers start at 1. */
+export async function getPostsPage(page: number, filter?: NewsFilter, moon?: MoonState, perPage = PER_PAGE) {
+  let posts: Post[];
+  if (filter === 'featured') posts = moon ? await allFeatured(moon) : [];
+  else if (filter) posts = (await getPosts()).filter((p) => p.categories.includes(filter));
+  else posts = await getPosts();
+
+  // Outside new moons and eclipses, keep the archive purely good news
+  if (!showsReflection(moon)) posts = posts.filter((p) => p.tone !== 'reflection');
+
   const totalPages = Math.max(1, Math.ceil(posts.length / perPage));
   return {
     posts: posts.slice((page - 1) * perPage, page * perPage),

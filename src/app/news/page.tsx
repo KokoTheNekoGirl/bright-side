@@ -4,7 +4,9 @@ import NewsArchive from '@/components/news/NewsArchive';
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: 'Good news | Look on the Bright Side',
+  title: "Good News",
+  description: "Every good news story in one location, filterable by category.",
+  alternates: { canonical: "/news" },
 };
 
 export default function NewsPage() {

@@ -2,9 +2,10 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import type { MoonState } from '@/lib/moon';
 import { getFeaturedPosts } from '@/lib/news/get-posts';
+import { isReflectionTheme } from '@/lib/news/tone';
 import EmptyState from './EmptyState';
-import Pagination from './Pagination';
 import PostList from './PostList';
+import BrushStroke from '@/components/BrushStroke';
 
 /**
  * Home page: posts whose (private) tone matches the moon.
@@ -13,31 +14,31 @@ import PostList from './PostList';
  *  - None: soft error + "See other good news!"
  */
 export default async function FeaturedNews({ moon, page = 1 }: { moon: MoonState; page?: number }) {
-  const { posts, totalPages, paginated } = await getFeaturedPosts(moon, page);
+  const { posts, totalPages } = await getFeaturedPosts(moon, page);
   if (page > totalPages) notFound();
 
+  const reflecting = isReflectionTheme(moon.theme);
+
   return (
-    <section aria-labelledby="featured-heading" className="featured-news flex w-full flex-col gap-10">
-      <h2 id="featured-heading" className="sr-only">
-        Featured good news
+    <section aria-labelledby="featured-heading" className="featured-news flex w-full items-center flex-col gap-10">
+      <h2 id="featured-heading text-center">
+        {reflecting ? 'Featured Somber News' : 'Featured Good News'}
       </h2>
 
       {posts.length ? (
         <>
           <PostList posts={posts} />
-          {paginated ? (
-            <Pagination page={page} totalPages={totalPages} basePath="/" />
-          ) : (
-            <Link href="/news" className="more-news self-center text-primary underline-offset-4 hover:underline">
-              And more good news!
-            </Link>
-          )}
+          <Link href="/news/category/featured" className="more-news self-center text-primary relative brush-link hover:drop-shadow-[0_0_15px_rgb(var(--primary))]">
+            {reflecting ? 'see more news' : 'and more good news!'}
+            <BrushStroke />
+          </Link>
         </>
       ) : (
         <div className="flex flex-col items-center">
           <EmptyState />
-          <Link href="/news" className="more-news text-primary underline-offset-4 hover:underline">
-            See other good news!
+          <Link href="/news" className="more-news text-primary relative brush-link hover:drop-shadow-[0_0_15px_rgb(var(--primary))]">
+            {reflecting ? 'see other news' : 'see other good news!'}
+            <BrushStroke />
           </Link>
         </div>
       )}

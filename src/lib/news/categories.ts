@@ -101,6 +101,13 @@ export const CATEGORIES: Record<CategoryId, Category> = {
   },
 };
 
+/** Order of the filter buttons on /news (graphic isn't filterable). */
+export const FILTER_CATEGORIES: CategoryId[] = [
+  'animals', 'people', 'science', 'hope', 'tomorrow', 'nature', 'climate', 'health', 'oceans',
+];
+
+export const categoryHref = (id: CategoryId | 'featured') => `/news/category/${id}`;
+
 /** Topic-specific categories (everything except the general ones and 'graphic'). */
 const SPECIFIC: CategoryId[] = ['animals', 'people', 'science', 'nature', 'climate', 'health', 'oceans'];
 const GENERAL: CategoryId[] = ['hope', 'tomorrow'];

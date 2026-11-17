@@ -1,11 +1,12 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import Link from "next/link";
 import { Fraunces, DM_Sans } from "next/font/google";
 import "./globals.css";
 import { getImageProps } from "next/image";
-import { SITE_TITLE } from '@/consts';
+import { SITE_TITLE, SITE_DESCRIPTION } from '@/consts';
 import { getMoonState } from '@/lib/moon';
 import ExternalLink from '@/components/ExternalLink';
+import SiteNav from '@/components/SiteNav';
 
 const logoCommon = { alt: `${SITE_TITLE} Logo`, fetchPriority: 'high' as const };
 
@@ -34,9 +35,36 @@ const DMsans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Look on the Bright Side",
-  description: "Thoughtfully crafted by KokoNekoArt.",
+  metadataBase: new URL("https://brightsidemoon.vercel.app/"),
+  title: {
+    default: "Look on the Bright✦Side",
+    template: "%s ✦ Look on the Bright✦Side",
+  },
+  description: SITE_DESCRIPTION,
+  authors: [{ name: "KokoNekoArt", url: "https://kokoneko.art" }],
+  openGraph: {
+    type: "website",
+    siteName: "Look on the Bright✦Side",
+    locale: "en_CA",
+  },
+  twitter: { card: "summary_large_image" },
+  alternates: { canonical: "/" },
+  icons: {
+    icon: [
+      { url: "/favicon-96x96.png", type: "image/png", sizes: "96x96" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: { url: "/apple-touch-icon.png", sizes: "180x180" },
+  },
+  appleWebApp: { title: "Bright✦Side" },
+  manifest: "/site.webmanifest",
 };
+
+export const viewport: Viewport = {
+  themeColor: "#101C3B",
+};
+
 export default function RootLayout({ children }: LayoutProps<"/">) {
   const moon = getMoonState();
 
@@ -46,22 +74,15 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${frauncesDisplay.variable} ${DMsans.variable} h-full antialiased`}
     >
       <body data-moon-mode={moon.mode} className="min-h-screen overflow-x-hidden flex flex-col">
-        <header className="flex justify-between items-center px-3 py-2.5 gap-2.5">
-          <Link href="/"><picture>
-          <source media="(min-width: 64rem)" srcSet={logoDesktop} />
-          {/* eslint-disable-next-line jsx-a11y/alt-text */}
-          <img {...logoMobile} className="h-[70px] w-auto lg:h-[94px]" />
-        </picture></Link>
-          <nav id="site-nav" className="site-nav" aria-label="Main" itemScope itemType="https://schema.org/SiteNavigationElement">
-            {/* <button id="menu-toggle" className="menu-toggle" type="button" aria-expanded="false" aria-controls="menu-list" aria-label="Open main menu">
-                <i id="menu-icon" className="fa-solid" aria-hidden="true"></i>
-            </button>
-            <div className="menu-main-menu-container">
-                <ul className="menu" id="menu-list">
-                    <li className="menu-item"></li>
-                </ul>
-            </div> */}
-        </nav>
+        <header className="flex justify-between items-center px-5 py-3 gap-2.5">
+          <Link href="/">
+            <picture>
+              <source media="(min-width: 64rem)" srcSet={logoDesktop} />
+              {/* eslint-disable-next-line jsx-a11y/alt-text */}
+              <img {...logoMobile} className="h-[70px] w-auto lg:h-[94px]" />
+            </picture>
+          </Link>
+          <SiteNav />
         </header>
 
         <main className="grow" itemProp="mainContentOfPage">
