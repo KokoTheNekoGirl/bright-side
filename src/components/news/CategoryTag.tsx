@@ -12,7 +12,7 @@ import {
   SealWarningIcon,
 } from '@phosphor-icons/react/ssr';
 import type { Icon } from '@phosphor-icons/react';
-import { CATEGORIES, categoryHref, type CategoryColor, type CategoryId } from '@/lib/news/categories';
+import { CATEGORIES, categoryHref, type CategoryId } from '@/lib/news/categories';
 
 /* Swap any icon here: browse https://phosphoricons.com and import the
    same name + "Icon" from '@phosphor-icons/react/ssr'. */
@@ -39,7 +39,7 @@ export default function CategoryTag({ id }: { id: CategoryId }) {
   const className = `category-tag inline-flex items-center gap-1 font-medium leading-5 text-[rgb(var(--cat))]`;
   const content = (
     <>
-      <IconComponent aria-hidden="true" weight="regular" className="size-4 shrink-0" />
+      <IconComponent aria-hidden="true" weight="duotone" className="size-4 shrink-0" />
       {label}
     </>
   );

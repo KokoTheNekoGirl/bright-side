@@ -25,7 +25,7 @@ export default function Pagination({
   if (totalPages <= 1) return null;
   const href = (n: number) => pageHref(n, basePath);
 
-  const linkClass = 'inline-flex min-w-9 items-center justify-center gap-1 rounded-full px-3 py-1.5';
+  const linkClass = 'pagination-link inline-flex min-w-9 items-center justify-center gap-1 rounded-full px-3 py-1.5';
 
   return (
     <nav aria-label="Pagination" className="pagination flex justify-center">
@@ -55,7 +55,7 @@ export default function Pagination({
                 href={href(item)}
                 aria-current={item === page ? 'page' : undefined}
                 aria-label={`Page ${item}`}
-                className={`${linkClass} aria-[current=page]:bg-primary aria-[current=page]:text-deep`}
+                className={`${linkClass}`}
               >
                 {item}
               </Link>

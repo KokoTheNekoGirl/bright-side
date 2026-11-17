@@ -7,6 +7,7 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '@/consts';
 import { getMoonState } from '@/lib/moon';
 import ExternalLink from '@/components/ExternalLink';
 import SiteNav from '@/components/SiteNav';
+import { ArrowSquareOutIcon } from '@phosphor-icons/react/ssr';
 
 const logoCommon = { alt: `${SITE_TITLE} Logo`, fetchPriority: 'high' as const };
 
@@ -74,7 +75,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${frauncesDisplay.variable} ${DMsans.variable} h-full antialiased`}
     >
       <body data-moon-mode={moon.mode} className="min-h-screen overflow-x-hidden flex flex-col">
-        <header className="flex justify-between items-center px-5 py-3 gap-2.5">
+        <div aria-hidden="true" className="site-bg pointer-events-none fixed top-0 left-0 -z-20 h-lvh w-full" />
+        <header className="flex justify-between items-center px-5 py-3 gap-2.5 overflow-x-clip">
           <Link href="/">
             <picture>
               <source media="(min-width: 64rem)" srcSet={logoDesktop} />
@@ -91,7 +93,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
 
         <footer className="flex justify-between items-center px-3 py-2.5 gap-2.5">
               <div></div>
-              <p><ExternalLink href="https://kokoneko.art">KokoNekoArt</ExternalLink> © 2026</p>
+              <p className="flex items-center gap-2"><ExternalLink href="https://kokoneko.art" className="flex items-center gap-1">KokoNekoArt <ArrowSquareOutIcon aria-hidden="true" className="size-3"/></ExternalLink> © 2026
+              <span className="inline-block drop-shadow-[0_0_25px_rgb(var(--body))]">
+                <span className="block h-5 w-4 bg-body [mask:url(/assets/star.svg)_center/contain_no-repeat]" />
+              </span>
+              <Link href="/attribution">Attributions</Link>
+              </p>
               <div></div>
         </footer>
 

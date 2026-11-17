@@ -7,4 +7,4 @@ export const isNewsFilter = (value: string): value is NewsFilter =>
   (NEWS_FILTERS as string[]).includes(value);
 
 export const filterTitle = (filter: NewsFilter) =>
-  `Good news: ${filter === 'featured' ? 'featured' : CATEGORIES[filter].label} | Look on the Bright Side`;
+  `Good News: ${filter === 'featured' ? 'featured' : CATEGORIES[filter].label} stories`;

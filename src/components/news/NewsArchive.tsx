@@ -24,7 +24,7 @@ export default async function NewsArchive({ page, filter }: { page: number; filt
           <p className="md-subheading mb-2.5">
             <span className="relative inline-block">
               {subheading}
-              <BrushStroke />
+              <BrushStroke className="animate-brush-wipe motion-reduce:animate-none"/>
             </span>
           </p>
           <h1 id="news-heading" className="font-display text-xlg text-heading">

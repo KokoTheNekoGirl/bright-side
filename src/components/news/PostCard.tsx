@@ -1,4 +1,4 @@
-import { ArrowUpRightIcon, CalendarStarIcon, NewspaperIcon, YoutubeLogoIcon } from '@phosphor-icons/react/ssr';
+import { ArrowUpRightIcon, CalendarStarIcon, NewspaperIcon, YoutubeLogoIcon, ArrowSquareOutIcon } from '@phosphor-icons/react/ssr';
 import ExternalLink from '@/components/ExternalLink';
 import type { Post } from '@/lib/news/get-posts';
 import { SITE_TIMEZONE } from '@/consts';
@@ -32,11 +32,12 @@ function PostMeta({ post }: { post: Post }) {
   const SourceIcon = post.kind === 'video' ? YoutubeLogoIcon : NewspaperIcon;
 
   return (
-    <p className="flex flex-wrap items-center gap-x-2.5 leading-5 text-accent">
+    <p className="flex flex-wrap items-center gap-x-2.5 meta-text text-accent">
       <ExternalLink href={post.source.homepage} className="source-link inline-flex items-center gap-[5px]">
         <SourceIcon aria-hidden="true" className="size-4" />
         <span className="sr-only">{post.kind === 'video' ? 'Channel: ' : 'Source: '}</span>
         {post.source.name}
+        <ArrowSquareOutIcon aria-hidden="true" className="size-3"/>
       </ExternalLink>
       {post.date && (
         <span className="inline-flex items-center gap-[5px]">
@@ -82,7 +83,7 @@ export default function PostCard({ post }: { post: Post }) {
               <BrushStroke className="text-primary"/>
               <ArrowUpRightIcon
                 aria-hidden="true"
-                className="mt-1 size-6 shrink-0 text-primary transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 motion-reduce:transition-none"
+                className="mt-1 size-6 shrink-0 text-primary group-hover:-translate-y-0.5 group-hover:translate-x-0.5 motion-reduce:transition-none"
               />
             </ExternalLink>
           </h3>

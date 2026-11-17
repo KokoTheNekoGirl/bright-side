@@ -1,8 +1,8 @@
 import Parser from 'rss-parser';
 import { MoonPhase } from 'astronomy-engine';
 import type { MoonState } from '@/lib/moon';
-import { categorise, type CategoryId } from './categories';
-import { isBlocked, isExcluded, isGraphic } from './content';
+import { bestOtherCategory, categorise, type CategoryId } from './categories';
+import { isBlocked, isExcluded, isGraphic, isPolitical } from './content';
 import { CURATION } from './curation';
 import { SOURCES, type Source } from './sources';
 import { classifyTone, THEME_TONE, type Tone } from './tone';
@@ -16,29 +16,25 @@ export interface Post {
   date: Date | null;
   author: string | null;
   source: Pick<Source, 'id' | 'name' | 'homepage' | 'license'>;
-  /** 1–2 categories, or 'graphic' + 1–2 (graphic always first). */
-  categories: CategoryId[];
+  categories: CategoryId[]; //graphic always comes first
   graphic: boolean;
-  /** Private editorial tone. Never rendered. */
-  tone: Tone;
+  tone: Tone; // private moon editorial tone.
   pinned: boolean;
-  /** YouTube video ID (videos only). */
   videoId: string | null;
-  /** True only for CC articles you've opted in via curation.ts. Not used on the page yet. */
   canEmbed: boolean;
-  /** Full article HTML when the feed provides it (CC sources only). Not rendered yet. */
-  contentHtml: string | null;
+  contentHtml: string | null; //not rendered
 }
 
 /** How long to cache each feed (seconds). */
 const FEED_REVALIDATE = 3600;
 const FEED_TIMEOUT_MS = 8000;
+
+/** How much we keep. */
 const EXCERPT_LENGTH = 180;
-/** Safety cap on how many posts are kept in total. */
+const BODY_LENGTH = 1500; //only used for scoring
 const MAX_POSTS = 500;
-/** Posts on the home page (and per page on blue moon / eclipse). */
 export const HOME_LIMIT = 10;
-/** Posts per page on /news. */
+export const SPECIAL_PER_PAGE = 20;
 export const PER_PAGE = 20;
 
 type MediaGroup = { 'media:description'?: string[] };
@@ -94,6 +90,32 @@ function tagsOf(item: FeedItem): string[] {
   return tags.map((t) => t.trim()).filter(Boolean);
 }
 
+/*
+ * Channel boilerplate: lines that repeat across a channel's videos (membership
+ * plugs, link lists, social handles) say nothing about the video itself, and
+ * would tilt every video toward the same categories. Any line found in 30%+
+ * of the feed's videos (at least 2) is dropped before scoring.
+ */
+function boilerplateLines(descriptions: string[]): Set<string> {
+  const counts = new Map<string, number>();
+  for (const d of descriptions) {
+    for (const line of new Set(d.split('\n').map((l) => l.trim()).filter(Boolean))) {
+      counts.set(line, (counts.get(line) ?? 0) + 1);
+    }
+  }
+  const min = Math.max(2, Math.ceil(descriptions.length * 0.3));
+  return new Set([...counts].filter(([, n]) => n >= min).map(([line]) => line));
+}
+
+function videoSummary(description: string, boilerplate: Set<string>): string {
+  return description
+    .split('\n')
+    .map((l) => l.trim())
+    .filter((l) => l && !boilerplate.has(l) && !/^[=\-_*~]{3,}$/.test(l))
+    .join(' ')
+    .replace(/https?:\/\/\S+/g, ' ');
+}
+
 async function fetchSource(source: Source): Promise<Post[]> {
   const res = await fetch(source.feedUrl, {
     next: { revalidate: FEED_REVALIDATE },
@@ -104,6 +126,9 @@ async function fetchSource(source: Source): Promise<Post[]> {
 
   const feed = await parser.parseString(await res.text());
 
+  const rawDescription = (item: FeedItem) => item.mediaGroup?.['media:description']?.[0] ?? '';
+  const boilerplate = source.kind === 'video' ? boilerplateLines(feed.items.map(rawDescription)) : new Set<string>();
+
   return feed.items.flatMap((item): Post[] => {
     const url = item.link?.trim();
     const title = cleanText(item.title);
@@ -113,18 +138,37 @@ async function fetchSource(source: Source): Promise<Post[]> {
     if (curation.hide) return [];
 
     const isVideo = source.kind === 'video';
-    const description = isVideo ? (item.mediaGroup?.['media:description']?.[0] ?? '') : (item.contentSnippet ?? item.content);
+    // What readers see: excerpt (articles) or description (videos)
+    const description = isVideo ? videoSummary(rawDescription(item), boilerplate) : (item.contentSnippet ?? item.content);
     const text = cleanText(description);
-    const both = `${title} ${text}`;
-
-    if (source.filterNegative && !curation.pin && isBlocked(both)) return [];
+    // Extra evidence for scoring only: the start of the full article, when the feed includes it
+    const body = isVideo ? '' : cleanText(item['content:encoded']).slice(0, BODY_LENGTH);
     const tags = tagsOf(item);
-    if (!curation.pin && isExcluded(`${both} ${tags.join(' ')}`)) return [];
+    const visible = `${title} ${text} ${tags.join(' ')}`;
 
-    const tone = curation.tone ?? source.fixedTone ?? classifyTone(title, text);
-    const graphic = curation.graphic ?? isGraphic(both, tone);
-    const topical =
-      curation.categories ?? source.fixedCategories ?? categorise({ title, text, tags: tagsOf(item) });
+    if (!curation.pin) {
+      if (source.filterNegative && isBlocked(`${title} ${text}`)) return [];
+      if (isExcluded(visible)) return []; // AI topics
+      if (isPolitical(visible, body)) return []; // US partisan politics
+    }
+
+    // Tone: fixed sources keep their tone unless this post is clearly somber
+    const autoTone = classifyTone(title, text, body);
+    const tone = curation.tone ?? (source.fixedTone ? (autoTone === 'reflection' ? 'reflection' : source.fixedTone) : autoTone);
+
+    // Graphic warning is judged on what readers actually see
+    const graphic = curation.graphic ?? isGraphic(`${title} ${text}`, tone);
+
+    // Categories: a single fixed category gets the best second one for this post
+    const input = { title, text, body, tags };
+    let topical: CategoryId[];
+    if (curation.categories) topical = [...curation.categories];
+    else if (source.fixedCategories?.length === 1) {
+      const [fixed] = source.fixedCategories;
+      const second = bestOtherCategory(input, fixed);
+      topical = second ? [fixed, second] : [fixed];
+    } else topical = source.fixedCategories ? [...source.fixedCategories] : categorise(input);
+
     const date = item.isoDate ?? item.pubDate;
 
     return [
@@ -224,10 +268,11 @@ async function allFeatured(moon: MoonState): Promise<Post[]> {
 export async function getFeaturedPosts(moon: MoonState, page = 1) {
   const matches = await featuredMatches(moon);
   const paginated = moon.mode !== 'default';
-  const totalPages = paginated ? Math.max(1, Math.ceil(matches.length / HOME_LIMIT)) : 1;
-  const start = paginated ? (page - 1) * HOME_LIMIT : 0;
+  const perPage = paginated ? SPECIAL_PER_PAGE : HOME_LIMIT;
+  const totalPages = paginated ? Math.max(1, Math.ceil(matches.length / perPage)) : 1;
+  const start = paginated ? (page - 1) * perPage : 0;
 
-  return { posts: matches.slice(start, start + HOME_LIMIT), page, totalPages, paginated };
+  return { posts: matches.slice(start, start + perPage), page, totalPages, paginated };
 }
 
 /** What /news can be filtered by: a category, or 'featured' (the home page's picks). */

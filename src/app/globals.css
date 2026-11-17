@@ -105,13 +105,13 @@
 [data-color="blue"]   { --cat: var(--accent-blue); }
 [data-color="red"]    { --cat: var(--accent-red); }
 
-:root, body {
+:root, body, .moon-preview {
   --text: rgb( var(--body) );
   --body-bg: radial-gradient(at top left, rgb( var(--canvas) ), rgb( var(--deep) ));
   --container-bg: radial-gradient(at top left, rgb( var(--surface) ), rgb( var(--canvas) ));
 }
 
-body[data-moon-mode="eclipse"] {
+body[data-moon-mode="eclipse"], .moon-preview[data-moon-mode="eclipse"] {
   --primary: var(--eclipse);
   --header: var(--eclipse-text);
   --surface: 58, 33, 62;
@@ -127,7 +127,7 @@ body[data-moon-mode="eclipse"] {
   }
 }
 
-body[data-moon-mode="blue"] {
+body[data-moon-mode="blue"], .moon-preview[data-moon-mode="blue"] {
   --primary: var(--accent-blue);
   --surface: 26, 62, 112;
   --canvas: 13, 33, 70;
@@ -165,7 +165,7 @@ h2, .h2, .xlg-heading {
 
 h3, .h3, .lg-heading {
   font-size: var(--text-lg-custom);
-  line-height: 80%;
+  line-height: 90%;
   font-family: var(--font-display);
   font-style: normal;
   font-weight: 400;
@@ -181,6 +181,30 @@ h4, .h4, .md-heading  {
   font-weight: 500;
   letter-spacing: 0%;
   color: rgb( var( --header ) );
+  &.text-red {
+    color: rgb( var( --accent-red ) );
+    filter: drop-shadow(0 0 15px rgba(var(--accent-red), 1));
+  }
+  &.text-orange {
+    color: rgb( var( --accent-orange ) );
+    filter: drop-shadow(0 0 15px rgba(var(--accent-orange), 1));
+  }
+  &.text-yellow {
+    color: rgb( var( --accent-yellow ) );
+    filter: drop-shadow(0 0 15px rgba(var(--accent-yellow), 1));
+  }
+  &.text-green {
+    color: rgb( var( --accent-green ) );
+    filter: drop-shadow(0 0 15px rgba(var(--accent-green), 1));
+  }
+  &.text-blue {
+    color: rgb( var( --accent-blue ) );
+    filter: drop-shadow(0 0 15px rgba(var(--accent-blue), 1));
+  }
+  &.text-purple {
+    color: rgb( var( --primary ) );
+    filter: drop-shadow(0 0 15px rgba(var(--primary), 1));
+  }
 }
 
 h5, .h5, .sm-heading  {
@@ -191,10 +215,13 @@ h5, .h5, .sm-heading  {
   font-weight: 500;
   letter-spacing: 0%;
   color: rgb( var( --header ) );
+  &.text-primary {
+    color: rgb( var( --primary ) );
+  }
 }
   
 p, .p, button  {
-  font-size: var(--text-xsm-custom);
+  font-size: var(--text-xsm);
   line-height: 115%;
   letter-spacing: 0%;
   font-weight: 400;
@@ -214,50 +241,95 @@ p, .p, button  {
   color: rgb( var( --primary ) );
 }
 
-.meta-text {
-  font-size: var(--text-xsm-custom);
+.meta-text, p.meta-text {
+  font-size: var(--text-xxsm);
   line-height: 115%;
   letter-spacing: 0%;
   font-family: var(--font-sans);
   font-style: normal;
   font-weight: 400;
-  text-transform: lowercase;
   color: var( rgb( --accent ));
 }
 
 body {
-  background: var(--body-bg);
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  min-height: 100vh;
+  background: rgb(var(--deep));
+  min-height: 100dvh;
   max-width: 100vw;
   color: var(--text);
   font-family: var(--font-sans);
   font-family: var(--font-sans), sans-serif;
-  transition: background-color 0.6s ease;
+}
+
+.site-bg {
+  background: var(--body-bg);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
 /* link styles*/
 
-a.category-tag:is(:hover, :focus-visible) {
-  filter: drop-shadow(0 0 4px rgba(var(--cat), 0.5)) drop-shadow(0 0 12px rgba(var(--cat), 0.5));
+.menu-item a {
+  &:is(:hover, :focus-visible) {
+    filter: drop-shadow(0 0 15px rgba(var(--secondary), 1));
+  }
+  &:is([aria-current=page]) {
+    filter: drop-shadow(0 0 15px rgba(var(--primary), 1));
+  }
 }
 
-a.source-link:is(:hover, :focus-visible) {
-  filter: drop-shadow(0 0 4px rgba(var(--accent), 0.5)) drop-shadow(0 0 12px rgba(var(--accent), 0.5));
+.menu-toggle:hover, button:hover {
+  cursor: pointer;
+}
+
+.filter-button {
+  box-shadow: 0 0 20px 0 rgba(var(--deep), 0.5);
+}
+
+.filter-button:is(:focus-visible, :hover, [aria-current="page"]) {
+  box-shadow: 0 0 20px 0 rgba(var(--cat), 0.5);
+}
+
+.pagination-link:is(:focus-visible:not([aria-disabled="true"]), :hover:not([aria-disabled="true"]),[aria-current="page"]) {
+  filter: drop-shadow(0 0 15px rgba(var(--primary), 1));
+}
+
+.pagination-link:is([aria-current="page"]){
+  outline: 1px solid rgb( var( --primary ) );
+  background: rgba( var( --primary ), 0.2 );
+}
+
+a.category-tag:is(:focus-visible, :hover) {
+  filter: drop-shadow(0 0 20px rgba(var(--cat), 0.5));
+}
+
+a.source-link:is(:focus-visible, :hover) {
+  filter: drop-shadow(0 0 20px rgba(var(--accent), 0.5));
+}
+
+a.brush-link:is(:focus-visible, :hover) {
+  filter: drop-shadow(0 0 20px rgba(var(--primary), 0.5));
 }
 
 .brush-link .brush {
   clip-path: inset(0 100% 0 0);
   transition: clip-path 0.65s cubic-bezier(0.65, 0, 0.35, 1);
 }
-.brush-link:is(:hover, :focus-visible, [aria-current="page"]) .brush {
+.brush-link:is(:focus-visible, :hover, [aria-current="page"]) .brush {
   clip-path: inset(0 0 0 0);
 }
 
-.menu-toggle:hover {
-  cursor: pointer;
+.preview-button[data-option="tonight"] { --btn: var(--primary); }
+.preview-button[data-option="blue"]    { --btn: var(--secondary); }
+.preview-button[data-option="eclipse"] { --btn: var(--eclipse); }
+
+/* Active (selected) and keyboard focus */
+.preview-button:is([aria-pressed="true"]) {
+  box-shadow: 0 0 15px 0 rgba(var(--btn), 1);
+}
+
+.preview-button:is(:focus-visible, :hover):not([aria-pressed="true"]) {
+  box-shadow: 0 0 15px 0 rgba(var(--btn), 0.5);
 }
 
 /* Space is very pretty */
@@ -302,6 +374,14 @@ a.source-link:is(:hover, :focus-visible) {
 
 /* Time for some responsivity */
 
+@media (hover: none) {
+  .filter-button:hover,a:hover:not([aria-current="page"]), button:hover:not([aria-pressed="true"]) {
+    box-shadow: unest;
+    filter:unset;
+  }
+  .brush-link:hover .brush { clip-path: inset(0 0 0 0); }
+}
+
 /* Accessibility for all is a human right */
 
 .sr-only {
@@ -326,5 +406,9 @@ a.source-link:is(:hover, :focus-visible) {
   }
   .nebula::after { animation: none; opacity: 0.6; }
 
-  .brush-link .brush { transition: none; }
+  .menu-item a,
+  .brush-link, 
+  .brush-link .brush, 
+  .category-tag,
+  .pagination-link { transition: none; }
 }

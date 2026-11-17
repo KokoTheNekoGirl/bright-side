@@ -44,6 +44,7 @@ export default function MoonHero({ moon }: { moon: MoonState }) {
       <Image
         src={`/assets/phases/${moon.image}.svg`}
         alt={MOON_ALT[moon.image]}
+        title={MOON_ALT[moon.image]}
         width={120}
         height={100}
         priority

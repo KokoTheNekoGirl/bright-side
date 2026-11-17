@@ -77,7 +77,7 @@ export default function SiteNav() {
                   href={link.href}
                   itemProp="url"
                   aria-current={active ? 'page' : undefined}
-                  className="relative inline-block font-display text-lg-custom capitalize text-heading transition-[filter] hover:drop-shadow-[0_0_15px_rgb(var(--secondary))] focus:drop-shadow-[0_0_15px_rgb(var(--secondary))] aria-[current=page]:drop-shadow-[0_0_15px_rgb(var(--primary))] motion-reduce:transition-none"
+                  className="relative inline-block font-display text-lg-custom capitalize text-heading"
                 >
                   <span itemProp="name">{link.label}</span>
                   {active && <BrushStroke className="text-primary animate-brush-wipe motion-reduce:animate-none" />}

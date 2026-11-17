@@ -43,7 +43,8 @@ export default function VideoEmbed({
     >
       <Image
         src={`https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`}
-        alt=""
+        alt={`${title} thumbnail`}
+        title={title}
         fill
         sizes="(min-width: 768px) 640px, 100vw"
         className={`object-cover ${sensitive ? 'scale-110 blur-xl' : ''}`}

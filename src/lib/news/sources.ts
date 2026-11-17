@@ -2,7 +2,7 @@ import type { CategoryId } from './categories';
 import type { Tone } from './tone';
 
 /*
- * Everything Bright Side pulls from.
+ * Everything Bright✦Side pulls from.
  *
  * `license` says what you're allowed to show:
  *   'cc'        → Creative Commons / republication allowed. Full article may be
@@ -120,7 +120,7 @@ export const SOURCES: Source[] = [
     feedUrl: youtubeFeed('UC6QFT2c2MJxID-vxHDeX9XQ'),
     homepage: 'https://www.youtube.com/@planet-wild',
     license: 'embed',
-    fixedCategories: ['nature', 'tomorrow'],
+    fixedCategories: ['nature'],
   },
   {
     id: 'ocean-cleanup',
@@ -129,7 +129,7 @@ export const SOURCES: Source[] = [
     feedUrl: youtubeFeed('UCYXGHivsMPVU-h-M_wd9m3Q'),
     homepage: 'https://www.youtube.com/@theoceancleanup',
     license: 'embed',
-    fixedCategories: ['oceans', 'tomorrow'],
+    fixedCategories: ['oceans'],
   },
   {
     id: 'mossyearth',
@@ -138,7 +138,7 @@ export const SOURCES: Source[] = [
     feedUrl: youtubeFeed('UC1OLx7nzJgIqwpDzFFrTuLA'),
     homepage: 'https://www.youtube.com/@MossyEarth',
     license: 'embed',
-    fixedCategories: ['nature', 'animals'],
+    fixedCategories: ['nature'],
     fixedTone: 'celebration',
   },
   {
@@ -148,7 +148,7 @@ export const SOURCES: Source[] = [
     feedUrl: youtubeFeed('UC1_up347GdfKBDVGqwjt7Aw'),
     homepage: 'https://youtube.com/@ecosia',
     license: 'embed',
-    fixedCategories: ['nature', 'climate'],
+    fixedCategories: ['climate'],
   },
   {
     id: 'just-have-a-think',
@@ -157,7 +157,7 @@ export const SOURCES: Source[] = [
     feedUrl: youtubeFeed('UCRBwLPbXGsI2cJe9W1zfSjQ'),
     homepage: 'https://youtube.com/@justhaveathink',
     license: 'embed',
-    fixedCategories: ['climate', 'science'],
+    fixedCategories: ['climate'],
     fixedTone: 'reflection',
   },
   {
@@ -167,7 +167,6 @@ export const SOURCES: Source[] = [
     feedUrl: youtubeFeed('UC_ZzIu99sCDtldbiSxOt00Q'),
     homepage: 'https://youtube.com/@mossyearth-fieldnotes',
     license: 'embed',
-    fixedCategories: ['oceans', 'nature'],
   },
   {
     id: 'positive-news-yt',
@@ -186,7 +185,7 @@ export const SOURCES: Source[] = [
     feedUrl: youtubeFeed('UCNsvLV955XWEgKUfkDVbtpg'),
     homepage: 'https://youtube.com/@goinggreenofficial',
     license: 'embed',
-    fixedCategories: ['climate', 'people'],
+    fixedCategories: ['climate'],
   },
   {
     id: 'andrew-millison',
@@ -195,7 +194,7 @@ export const SOURCES: Source[] = [
     feedUrl: youtubeFeed('UCgb_TbreMgfDdLKkr4yYJHw'),
     homepage: 'https://youtube.com/@amillison',
     license: 'embed',
-    fixedCategories: ['climate', 'people'],
+    fixedCategories: ['climate'],
   },
   {
     id: 'climate-adam',
@@ -206,6 +205,24 @@ export const SOURCES: Source[] = [
     license: 'embed',
     fixedCategories: ['climate'],
     fixedTone: 'reflection',
+  },
+  {
+    id: 'leave-curious',
+    name: 'Leave Curious',
+    kind: 'video',
+    feedUrl: youtubeFeed('UCMrYUtfJiZHN3iJKqrd8UhQ'),
+    homepage: 'https://youtube.com/@leavecurious',
+    license: 'embed',
+    fixedCategories: ['nature'],
+  },
+  {
+    id: 'arbordayfoundation',
+    name: 'Arbor Day Foundation',
+    kind: 'video',
+    feedUrl: youtubeFeed('UCaUfpc8WmwJWQqzRupURzRw'),
+    homepage: 'https://youtube.com/@arbordayfoundation',
+    license: 'embed',
+    fixedCategories: ['nature'],
   },
 
   /* ---------- Restricted: terms forbid automated copying / databases. Ask permission first. ---------- */
@@ -227,7 +244,7 @@ export const SOURCES: Source[] = [
     license: 'link-only',
     enabled: false,
   },
-  /* ---------- Remvoved: too spammy or didn't fit Bright Side's tone ---------- */
+  /* ---------- Remvoved: too spammy or didn't fit Bright✦Side's tone ---------- */
   {
     id: 'nasa',
     name: 'NASA',
