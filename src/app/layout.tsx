@@ -93,7 +93,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
 
         <footer className="flex justify-between items-center px-3 py-2.5 gap-2.5">
               <div></div>
-              <p className="flex items-center gap-2"><ExternalLink href="https://kokoneko.art" className="flex items-center gap-1">KokoNekoArt <ArrowSquareOutIcon aria-hidden="true" className="size-3"/></ExternalLink> © 2026
+              <p className="flex items-center gap-2">Thoughtfully made by <ExternalLink href="https://kokoneko.art" className="flex items-center gap-1">KokoNekoArt <ArrowSquareOutIcon aria-hidden="true" className="size-3"/></ExternalLink> in 2026
               <span className="inline-block drop-shadow-[0_0_25px_rgb(var(--body))]">
                 <span className="block h-5 w-4 bg-body [mask:url(/assets/star.svg)_center/contain_no-repeat]" />
               </span>

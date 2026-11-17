@@ -21,8 +21,7 @@ export interface Post {
   tone: Tone; // private moon editorial tone.
   pinned: boolean;
   videoId: string | null;
-  canEmbed: boolean;
-  contentHtml: string | null; //not rendered
+  credit: { text: string; href: string } | null; //publisher-required credit line
 }
 
 /** How long to cache each feed (seconds). */
@@ -170,6 +169,12 @@ async function fetchSource(source: Source): Promise<Post[]> {
     } else topical = source.fixedCategories ? [...source.fixedCategories] : categorise(input);
 
     const date = item.isoDate ?? item.pubDate;
+    const published = date ? new Date(date) : null;
+
+    // publisher hold
+    if (source.embargoHours && (!published || Date.now() - published.getTime() < source.embargoHours * 3_600_000)) {
+      return [];
+    }
 
     return [
       {
@@ -186,8 +191,9 @@ async function fetchSource(source: Source): Promise<Post[]> {
         tone,
         pinned: Boolean(curation.pin),
         videoId: isVideo ? (item.videoId ?? new URL(url).searchParams.get('v')) : null,
-        canEmbed: source.license === 'cc' && Boolean(curation.embed),
-        contentHtml: source.license === 'cc' ? (item['content:encoded'] ?? null) : null,
+        credit: source.credit
+          ? { text: source.credit.text, href: source.credit.href === 'original' ? url : source.credit.href }
+          : null,
       },
     ];
   });

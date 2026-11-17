@@ -37,6 +37,11 @@ function PostMeta({ post }: { post: Post }) {
         <SourceIcon aria-hidden="true" className="size-4" />
         <span className="sr-only">{post.kind === 'video' ? 'Channel: ' : 'Source: '}</span>
         {post.source.name}
+        {post.kind === 'article' && post.author && (
+        <span className="post-author">
+          <span className="sr-only">Author:</span> by {post.author}
+        </span>
+      )}
         <ArrowSquareOutIcon aria-hidden="true" className="size-3"/>
       </ExternalLink>
       {post.date && (
@@ -100,6 +105,13 @@ export default function PostCard({ post }: { post: Post }) {
             ) : (
               <p className="min-w-fit w-0">{post.excerpt}</p>
             ))}
+          {post.credit && (
+            <p className="post-credit mt-1 meta-text lowercase text-accent">
+              <ExternalLink href={post.credit.href} className="source-link inline-flex items-center gap-[5px]">
+                {post.credit.text} <ArrowSquareOutIcon aria-hidden="true" className="size-3"/>
+              </ExternalLink>
+            </p>
+          )}
         </>
       )}
     </article>

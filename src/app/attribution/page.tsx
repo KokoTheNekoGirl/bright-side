@@ -66,6 +66,18 @@ export default function SourcesPage() {
                       </ExternalLink>
                     </span>
                     <span className="meta-text text-accent">{HOW_USED[source.license]}</span>
+                    {source.licenseNotice && (
+                      <span className="text-sm text-accent">
+                        Licence:{' '}
+                        {source.licenseNotice.url ? (
+                          <ExternalLink href={source.licenseNotice.url} className="source-link">
+                            {source.licenseNotice.name}
+                          </ExternalLink>
+                        ) : (
+                          source.licenseNotice.name
+                        )}
+                      </span>
+                    )}
                   </li>
                 ))}
               </ul>

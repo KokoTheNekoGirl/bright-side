@@ -5,8 +5,7 @@ import type { Tone } from './tone';
  * Everything Bright✦Side pulls from.
  *
  * `license` says what you're allowed to show:
- *   'cc'        → Creative Commons / republication allowed. Full article may be
- *                 embedded per `rules`, on posts you opt in via curation.ts.
+ *   'cc'        → Creative Commons / republication allowed. Headline, summary and link, credited.
  *   'link-only' → All rights reserved. Headline, short excerpt and link only.
  *   'embed'     → YouTube. Shown with YouTube's official embed player.
  *
@@ -21,6 +20,9 @@ export interface Source {
   feedUrl: string;
   homepage: string;
   license: 'cc' | 'link-only' | 'embed';
+  licenseNotice?: { name: string; url?: string };
+  embargoHours?: number;
+  credit?: { text: string; href: 'original' | string };
   rules?: string;
   fixedCategories?: [CategoryId] | [CategoryId, CategoryId];
   fixedTone?: Tone;
@@ -48,6 +50,7 @@ export const SOURCES: Source[] = [
     feedUrl: 'https://news.mongabay.com/list/conservation-solutions/feed/',
     homepage: 'https://news.mongabay.com',
     license: 'cc',
+    licenseNotice: { name: 'CC BY-ND 4.0', url: 'https://creativecommons.org/licenses/by-nd/4.0/' },
     rules:
       'CC BY-ND 4.0. Credit author + Mongabay, link to the exact article, keep in-text links, no edits (headline may change). Only Mongabay/author-credited photos.',
     filterNegative: true,
@@ -59,6 +62,7 @@ export const SOURCES: Source[] = [
     feedUrl: 'https://reasonstobecheerful.world/feed/',
     homepage: 'https://reasonstobecheerful.world',
     license: 'cc',
+    licenseNotice: { name: 'Creative Commons (most articles)' },
     rules: 'MOST articles CC: check each one. Credit + link back. Ask the editors before reusing photos.',
   },
   {
@@ -68,8 +72,10 @@ export const SOURCES: Source[] = [
     feedUrl: 'https://www.yesmagazine.org/feed',
     homepage: 'https://www.yesmagazine.org',
     license: 'cc',
+    licenseNotice: { name: 'Creative Commons (article text)' },
     rules:
       'CC text only, 48h after publication. Keep byline + bio, links intact, no text edits. Email reprints@yesmagazine.org. Images mostly not CC.',
+    embargoHours: 48,
   },
   {
     id: 'mit-news',
@@ -78,8 +84,10 @@ export const SOURCES: Source[] = [
     feedUrl: 'https://news.mit.edu/rss/feed',
     homepage: 'https://news.mit.edu',
     license: 'cc',
+    licenseNotice: { name: 'Syndication permitted by MIT News', url: 'https://news.mit.edu/terms-of-use' },
     rules:
       'Syndication allowed. Top: headline, sub-headline, byline, "MIT News" linking the original. Bottom: "Reprinted with permission of MIT News" linking news.mit.edu. Images need MIT approval.',
+    credit: { text: 'Reprinted with permission of MIT News', href: 'https://news.mit.edu/' },
     filterNegative: true,
   },
   {
@@ -89,7 +97,9 @@ export const SOURCES: Source[] = [
     feedUrl: 'https://www.shareable.net/feed/',
     homepage: 'https://www.shareable.net',
     license: 'cc',
+    licenseNotice: { name: 'CC BY-NC-ND 4.0', url: 'https://creativecommons.org/licenses/by-nc-nd/4.0/' },
     rules: 'CC BY-NC-ND 4.0. Non-commercial only. Add "This article originally appeared on Shareable.net" linking the original. Ask before using images.',
+    credit: { text: 'This article originally appeared on Shareable.net', href: 'original' },
   },
   {
     id: 'nexus-media',
@@ -98,6 +108,7 @@ export const SOURCES: Source[] = [
     feedUrl: 'https://nexusmedianews.com/feed/',
     homepage: 'https://nexusmedianews.com',
     license: 'cc',
+    licenseNotice: { name: 'CC BY-ND 3.0', url: 'https://creativecommons.org/licenses/by-nd/3.0/' },
     rules: 'CC BY-ND 3.0. Byline at top, tag line at bottom, link original. Email them links after publishing.',
     filterNegative: true,
   },
