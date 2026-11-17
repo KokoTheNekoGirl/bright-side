@@ -46,7 +46,8 @@ export default function VideoEmbed({
         alt={`${title} thumbnail`}
         title={title}
         fill
-        sizes="(min-width: 768px) 640px, 100vw"
+        loading="lazy"
+        sizes="(min-width: 1200px) 600px, (min-width: 768px) calc(100vw - 32px), 100vw"
         className={`object-cover ${sensitive ? 'scale-110 blur-xl' : ''}`}
       />
 

@@ -31,7 +31,6 @@ export default function MoonHero({ moon }: { moon: MoonState }) {
       <div aria-hidden="true" className="nebula pointer-events-none h-full w-full absolute inset-0 overflow-hidden" />
       <span
         className="moon-stats font-display text-md-custom text-semibold text-primary tabular-nums"
-        aria-label={`${(moon.illumination * 100).toFixed(1)} percent illuminated, phase angle ${moon.phaseAngle.toFixed(1)} degrees`}
       >
         <span className="flex items-center gap-1" aria-hidden="true">
           {(moon.illumination * 100).toFixed(1)} % 
@@ -39,6 +38,9 @@ export default function MoonHero({ moon }: { moon: MoonState }) {
             <span className="block h-6 w-5 bg-heading [mask:url(/assets/star.svg)_center/contain_no-repeat]" />
           </span>
           {moon.phaseAngle.toFixed(1)}°
+        </span>
+        <span className="sr-only">
+          {(moon.illumination * 100).toFixed(1)} percent illuminated, phase angle {moon.phaseAngle.toFixed(1)} degrees
         </span>
       </span>
       <Image

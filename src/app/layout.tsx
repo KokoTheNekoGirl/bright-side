@@ -4,12 +4,12 @@ import { Fraunces, DM_Sans } from "next/font/google";
 import "./globals.css";
 import { getImageProps } from "next/image";
 import { SITE_TITLE, SITE_DESCRIPTION } from '@/consts';
-import { getMoonState } from '@/lib/moon';
+import { getMoonState, type MoonState } from '@/lib/moon';
 import ExternalLink from '@/components/ExternalLink';
 import SiteNav from '@/components/SiteNav';
 import { ArrowSquareOutIcon } from '@phosphor-icons/react/ssr';
 
-const logoCommon = { alt: `${SITE_TITLE} Logo`, fetchPriority: 'high' as const };
+const logoCommon = { alt: `${SITE_TITLE} Logo`, title: SITE_TITLE, fetchPriority: 'high' as const };
 
 const {
   props: { srcSet: logoDesktop },
@@ -25,15 +25,26 @@ const { props: logoMobile } = getImageProps({
 // Recalculate the moon (and the body mode) at most once an hour
 export const revalidate = 3600;
 
-const frauncesDisplay = Fraunces({
-  variable: "--font-fraunces-display",
-  subsets: ["latin"],
-});
+const frauncesDisplay = Fraunces({ variable: "--font-fraunces-display", subsets: ["latin"], weight: ["400", "500", "600"] });
 
-const DMsans = DM_Sans({
-  variable: "--font-dm-sans",
-  subsets: ["latin"],
-});
+const DMsans = DM_Sans({ variable: "--font-dm-sans", subsets: ["latin"], weight: ["400", "500","600"], });
+
+const moon = getMoonState();
+
+const ogImage = `https://brightsidemoon.vercel.app/assets/og-images/og-${moon.image}.png`;
+
+const MOON_ALT: Record<MoonState['image'], string> = {
+  new: 'New moon',
+  'wax-crescent': 'Waxing crescent moon',
+  first: 'First quarter moon',
+  'wax-gibbous': 'Waxing gibbous moon',
+  full: 'Full moon',
+  'wan-gibbous': 'Waning gibbous moon',
+  third: 'Third quarter moon',
+  'wan-crescent': 'Waning crescent moon',
+  blue: 'Blue moon',
+  eclipse: 'Lunar eclipse',
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://brightsidemoon.vercel.app/"),
@@ -47,6 +58,12 @@ export const metadata: Metadata = {
     type: "website",
     siteName: "Look on the Bright✦Side",
     locale: "en_CA",
+    images: [{
+      url: ogImage,
+      width: 1200,
+      height: 630,
+      alt: `${MOON_ALT[moon.image]} ✦ Look on the Bright✦Side`,
+    }],
   },
   twitter: { card: "summary_large_image" },
   alternates: { canonical: "/" },

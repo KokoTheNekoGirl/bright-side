@@ -26,10 +26,6 @@
   }
 }
 
-* {
-  transition: 0.5s all ease-out;
-}
-
 :root {
 
   /* Default Theme Colors : RGB Value */
@@ -134,13 +130,14 @@ body[data-moon-mode="blue"], .moon-preview[data-moon-mode="blue"] {
   --deep: 6, 14, 34;
 }
 
-@media (prefers-color-scheme: light) {
+/* I'll come back for you...*/
+/* @media (prefers-color-scheme: light) {
   :root, body {
     --text: rgb( var(--deep) );
     --body-bg: radial-gradient(at top left, rgb( var(--pure-light) ), rgb( var(--body) ));
     --container-bg: radial-gradient(at top left, rgb( var(--body) ), rgb( var(--secondary) ));
   }
-}
+} */
 
 /* Typography ~ */
 h1, .h1, .xxlg-heading {
@@ -265,6 +262,10 @@ body {
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-attachment: fixed;
+}
+
+.post-card, .nebula, .site-bg, .moon-hero, .moon-preview, .not-found, .pillar, a, span, img, picture, p, h1, h2, h3, h4, h5, h6, button {
+  transition: 0.5s all ease-out;
 }
 
 /* link styles*/
@@ -406,9 +407,5 @@ a.brush-link:is(:focus-visible, :hover) {
   }
   .nebula::after { animation: none; opacity: 0.6; }
 
-  .menu-item a,
-  .brush-link, 
-  .brush-link .brush, 
-  .category-tag,
-  .pagination-link { transition: none; }
+  .menu-item a, .brush-link, .brush-link .brush, .category-tag, .pagination-link, .post-card, .nebula, .site-bg, .moon-hero, .moon-preview, .not-found, .pillar, a, span, img, picture, p, h1, h2, h3, h4, h5, h6, button { transition: none; }
 }
