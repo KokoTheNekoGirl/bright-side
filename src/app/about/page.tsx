@@ -42,7 +42,10 @@ const CONTENT = {
 
   phasesHeading: 'Good News, Through Every Phase',
   phases: [
-    `Bright✦Side follows the light of the moon. As the light grows, the front page features stories revolving around growth. During the full moon, we celebrate all we've accomplished while her light shines down on us. As the light dims, the featured stories shift to appreciate the effort we've done this far. Finally, as the last of the light fades and the cycle repeats, the new moon guides us towards reflective and somber stories. Bright✦Side never features content filled with despair, instead it features what still needs to be done or what can be done better. The site encourages you to take a mindful screen break, if you need it.`,
+    <>
+      Bright✦Side follows the light of the moon. As the light grows, the front page features stories revolving around <strong className="text-primary">growth</strong>. During the full moon, we <strong className="text-primary">celebrate</strong> all we&apos;ve accomplished while her light shines down on us. As the light dims, the featured stories shift to <strong className="text-primary">appreciate</strong> the effort we&apos;ve done this far. Finally, as the last of the light fades and the cycle repeats, the new moon guides us towards <strong className="text-primary">reflective</strong> and somber stories. Bright✦Side never features content filled with despair, instead it features what still needs to be done or what can be done better. The site encourages you to take a mindful screen break, if you need it.
+      {' '}
+    </>,
     <>
       Though, that&apos;s not the only moons worth mentioning. Rare astronomical events occur, and the site&apos;s look
       and its content changes slightly to celebrate fully or reflect deeply. During rare{' '}

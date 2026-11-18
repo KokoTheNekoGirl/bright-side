@@ -8,7 +8,6 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '@/consts';
 import { getMoonState, type MoonState } from '@/lib/moon';
 import ExternalLink from '@/components/ExternalLink';
 import SiteNav from '@/components/SiteNav';
-import { ArrowSquareOutIcon } from '@phosphor-icons/react/ssr';
 import MusicPlayer from '@/components/MusicPlayer';
 import { getPlaylist } from '@/lib/music/jamendo';
 
@@ -113,9 +112,9 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
           <div className="container max-w-[1200px] mx-auto mt-5 px-2.5 md:px-0">{children}</div>
         </main>
 
-        <footer className="flex justify-between items-center px-3 py-2.5 gap-2.5 mb-20">
+        <footer className="flex justify-between items-center px-3 py-2.5 gap-2.5 pb-20">
               <div></div>
-              <p className="">Thoughtfully made by <ExternalLink href="https://kokoneko.art" className="inline-flex items-center gap-1">KokoNekoArt <ArrowSquareOutIcon aria-hidden="true" className="size-3"/></ExternalLink> in 2026
+              <p className="">Thoughtfully made by <ExternalLink href="https://kokoneko.art">KokoNekoArt</ExternalLink> in 2026
               <span className="inline-block mx-1 drop-shadow-[0_0_25px_rgb(var(--body))]">
                 <span className="block h-5 w-4 bg-body [mask:url(/assets/star.svg)_center/contain_no-repeat]" />
               </span>

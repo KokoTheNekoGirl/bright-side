@@ -369,9 +369,9 @@ a.brush-link:is(:focus-visible, :hover) {
 }
 
 .music-bar {
-  background: rgba(var(--primary), 0.15);
+  background: rgba(var(--primary), 0.2);
   outline: 2px solid rgb(var(--primary));
-  box-shadow: 0 0 20px 0 rgba(var(--primary), 0.4);
+  box-shadow: 0 0 20px 0 rgba(var(--primary), 0.5);
   backdrop-filter: blur(8px);
 }
 .player-status, .player-star { color: rgb(var(--primary)); }
@@ -398,6 +398,7 @@ a.brush-link:is(:focus-visible, :hover) {
 
 .sr-only {
   position:    absolute !important;
+  display:     inline   !important;;
   overflow:    hidden   !important;
   white-space: nowrap   !important;
   width:   1px !important;

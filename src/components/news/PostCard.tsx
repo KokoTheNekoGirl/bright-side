@@ -1,4 +1,4 @@
-import { ArrowUpRightIcon, CalendarStarIcon, NewspaperIcon, YoutubeLogoIcon, ArrowSquareOutIcon } from '@phosphor-icons/react/ssr';
+import { ArrowUpRightIcon, CalendarStarIcon, NewspaperIcon, YoutubeLogoIcon, FeatherIcon } from '@phosphor-icons/react/ssr';
 import ExternalLink from '@/components/ExternalLink';
 import type { Post } from '@/lib/news/get-posts';
 import { SITE_TIMEZONE } from '@/consts';
@@ -50,26 +50,29 @@ function PostMeta({ post }: { post: Post }) {
   const SourceIcon = post.kind === 'video' ? YoutubeLogoIcon : NewspaperIcon;
 
   return (
-    <p className="flex flex-wrap items-center gap-x-2.5 meta-text text-accent">
-      <ExternalLink href={post.source.homepage} className="source-link inline-flex items-center gap-[5px]">
-        <SourceIcon aria-hidden="true" className="size-4" />
-        <span className="sr-only">{post.kind === 'video' ? 'Channel: ' : 'Source: '}</span>
-        {post.source.name}
-        {post.kind === 'article' && post.author && (
-        <span className="post-author">
-          <span className="sr-only">Author:</span> by {post.author}
-        </span>
-      )}
-        <ArrowSquareOutIcon aria-hidden="true" className="size-3"/>
-      </ExternalLink>
-      {post.date && (
-        <span className="inline-flex items-center gap-[5px]">
-          <CalendarStarIcon aria-hidden="true" className="size-4" />
-          <span className="sr-only">Published </span>
-          <PostDate date={post.date} />
-        </span>
-      )}
-    </p>
+    <p className="meta-text flex flex-wrap items-center gap-x-2.5 gap-y-1 text-accent">
+    <ExternalLink href={post.source.homepage} className="source-link">
+      <SourceIcon aria-hidden="true" className="size-4 shrink-0" />
+      <span className="sr-only">{post.kind === 'video' ? 'Channel: ' : 'Source: '}</span>
+      {post.source.name}
+    </ExternalLink>
+
+    {post.kind === 'article' && post.author && (
+      <span className="post-author inline-flex basis-full items-center gap-1 md:basis-auto">
+        <FeatherIcon aria-hidden="true" className="size-4 shrink-0" />
+        <span className="sr-only">Author: </span>
+        {post.author}
+      </span>
+    )}
+
+    {post.date && (
+      <span className="inline-flex basis-full items-center gap-1 md:basis-auto">
+        <CalendarStarIcon aria-hidden="true" className="size-4 shrink-0" />
+        <span className="sr-only">Published </span>
+        <PostDate date={post.date} />
+      </span>
+    )}
+  </p>
   );
 }
 
@@ -158,8 +161,8 @@ export default function PostCard({ post }: { post: Post }) {
               ))}
             {post.credit && (
               <p className="post-credit mt-1 meta-text lowercase text-accent">
-                <ExternalLink href={post.credit.href} className="source-link inline-flex items-center gap-[5px]">
-                  {post.credit.text} <ArrowSquareOutIcon aria-hidden="true" className="size-3"/>
+                <ExternalLink href={post.credit.href} className="source-link inline-flex items-center gap-1">
+                  {post.credit.text}
                 </ExternalLink>
               </p>
             )}

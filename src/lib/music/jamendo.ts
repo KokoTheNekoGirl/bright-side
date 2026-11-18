@@ -2,10 +2,10 @@ import type { MoonTheme } from '@/lib/moon';
 import { HIDDEN, MOODS, PINNED, PLAYLIST_LENGTH, RELEASED } from './playlist';
 
 const API = 'https://api.jamendo.com/v3.0/tracks/';
-const REVALIDATE = 3600;
+const REVALIDATE = 86_400;
 /** Fetch extra so hidden tracks and the daily shuffle still leave a full playlist. */
 const POOL = 50;
-/** Fewer than this and the moon borrows the 'grow' playlist instead. */
+/** Fewer than this and the moon tops up from the 'grow' search. */
 const MIN_TRACKS = 5;
 
 export interface Track {
@@ -87,16 +87,42 @@ function dailyShuffle<T>(items: T[]): T[] {
   return copy;
 }
 
-async function searchMood(theme: MoonTheme): Promise<Track[]> {
-  const mood = MOODS[theme];
+/** One Jamendo search: instrumental, released in the allowed years, most popular first. */
+function search(tags: string[], speed: string[] = []) {
   return request({
     limit: String(POOL),
     order: 'popularity_total',
     vocalinstrumental: 'instrumental',
     datebetween: `${RELEASED.from}_${RELEASED.to}`,
-    fuzzytags: mood.tags.join(' '), // sent as tag+tag
-    ...(mood.speed.length && { speed: mood.speed.join(' ') }),
+    fuzzytags: tags.join(' '), // sent as tag+tag
+    ...(speed.length > 0 && { speed: speed.join(' ') }),
   });
+}
+
+/*
+ * Searches for a mood, loosening the search if it finds too few tracks.
+ * Many tracks have no tempo info, so the speed filter alone can empty a search.
+ *   1. all tags + speed   2. all tags, any speed   3. first two tags, any speed
+ * The release-year limit is never loosened.
+ */
+async function searchMood(theme: MoonTheme): Promise<Track[]> {
+  const { tags, speed } = MOODS[theme];
+  const attempts = [
+    () => search(tags, speed),
+    () => search(tags),
+    () => search(tags.slice(0, 2)),
+  ];
+
+  const found = new Map<number, Track>();
+  for (const attempt of attempts) {
+    for (const track of await attempt()) found.set(track.id, track);
+    if (found.size >= PLAYLIST_LENGTH * 1.5) break;
+  }
+
+  if (process.env.NODE_ENV !== 'production') {
+    console.log(`[music] ${theme}: found ${found.size} tracks`);
+  }
+  return [...found.values()];
 }
 
 /** The playlist for tonight's moon: pinned tracks first, then a daily shuffle of the search. */
@@ -112,11 +138,14 @@ export async function getPlaylist(theme: MoonTheme): Promise<Track[]> {
   const keep = (t: Track) => !hidden.has(t.id) && !seen.has(t.id) && seen.add(t.id);
 
   const pinnedInOrder = pinnedIds.flatMap((id) => pinned.filter((t) => t.id === id)).filter(keep);
-  const rest = dailyShuffle(found.filter(keep));
-  const tracks = [...pinnedInOrder, ...rest].slice(0, PLAYLIST_LENGTH);
+  let rest = dailyShuffle(found.filter(keep));
 
-  if (tracks.length < MIN_TRACKS && theme !== 'grow') return getPlaylist('grow');
-  return tracks;
+  // Too few found for this moon: top up from the 'grow' search, keeping the pins
+  if (rest.length < MIN_TRACKS && theme !== 'grow') {
+    rest = [...rest, ...dailyShuffle((await searchMood('grow')).filter(keep))];
+  }
+
+  return [...pinnedInOrder, ...rest].slice(0, PLAYLIST_LENGTH);
 }
 
 /** Every moon's playlist, each track once, for the Sources page. */

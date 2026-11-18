@@ -235,10 +235,10 @@ function Player({ tracks }: { tracks: Track[] }) {
       <div
         id={queueId}
         hidden={!queueOpen}
-        className="music-queue absolute bottom-full left-0 mb-3 w-full max-w-sm rounded-xl bg-container p-4 shadow-card outline-2 outline-primary"
+        className="music-queue absolute bottom-full left-0 mb-3 flex max-h-[min(60dvh,28rem)] w-full max-w-sm flex-col rounded-xl bg-container p-4 shadow-card outline-2 outline-primary"
       >
         <p className="mb-2 font-display text-heading">Up next</p>
-        <ol className="flex flex-col gap-1">
+        <ol className="-mr-2 flex min-h-0 flex-col gap-1 overflow-y-auto overscroll-contain pr-2">
           {order.map((trackIndex, p) => {
             const t = tracks[trackIndex];
             return (
@@ -247,7 +247,7 @@ function Player({ tracks }: { tracks: Track[] }) {
                   type="button"
                   onClick={() => playAt(p)}
                   aria-current={p === pos ? 'true' : undefined}
-                  className="queue-track cursor-pointer text-left"
+                  className="queue-track min-w-0 cursor-pointer text-left wrap-anywhere"
                 >
                   {t.title} <span className="text-accent">by {t.artist}</span>
                 </button>
@@ -296,7 +296,9 @@ function Player({ tracks }: { tracks: Track[] }) {
           <ExternalLink href={track.trackUrl} className="player-link">
             {track.title}
           </ExternalLink>{' '}
-          by{' '}
+          <span aria-hidden="true" className="player-star">
+            ✦
+          </span>{' '}
           <ExternalLink href={track.artistUrl} className="player-link">
             {track.artist}
           </ExternalLink>

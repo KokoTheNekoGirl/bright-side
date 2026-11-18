@@ -111,17 +111,17 @@ export default async function SourcesPage() {
           </p>
           <ul role="list" className="flex flex-col gap-2">
             {tracks.map((t) => (
-              <li key={t.id}>
+              <li key={t.id} className="wrap-anywhere">
                 <ExternalLink href={t.trackUrl} className="source-link font-semibold text-heading">
                   {t.title}
                 </ExternalLink>{' '}
-                by{' '}
+                {' ✦ '}
                 <ExternalLink href={t.artistUrl} className="source-link">
                   {t.artist}
                 </ExternalLink>
                 {t.license && (
                   <>
-                    {' · '}
+                    {' ✦ '}
                     <ExternalLink href={t.license.url} className="source-link text-sm text-accent">
                       {t.license.name}
                     </ExternalLink>
