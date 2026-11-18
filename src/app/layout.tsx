@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import Link from "next/link";
+import Image from 'next/image';
 import { Fraunces, DM_Sans } from "next/font/google";
 import "./globals.css";
 import { getImageProps } from "next/image";
@@ -8,6 +9,8 @@ import { getMoonState, type MoonState } from '@/lib/moon';
 import ExternalLink from '@/components/ExternalLink';
 import SiteNav from '@/components/SiteNav';
 import { ArrowSquareOutIcon } from '@phosphor-icons/react/ssr';
+import MusicPlayer from '@/components/MusicPlayer';
+import { getPlaylist } from '@/lib/music/jamendo';
 
 const logoCommon = { alt: `${SITE_TITLE} Logo`, title: SITE_TITLE, fetchPriority: 'high' as const };
 
@@ -83,8 +86,9 @@ export const viewport: Viewport = {
   themeColor: "#101C3B",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
   const moon = getMoonState();
+  const tracks = await getPlaylist(moon.theme);
 
   return (
     <html
@@ -93,6 +97,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body data-moon-mode={moon.mode} className="min-h-screen overflow-x-hidden flex flex-col">
         <div aria-hidden="true" className="site-bg pointer-events-none fixed top-0 left-0 -z-20 h-lvh w-full" />
+        <div><Image src="/assets/bg.svg" width={800} height={800} alt="" loading="lazy" aria-hidden="true" className="bg-element mix-blend-screen pointer-events-none fixed top-0 right-0 -z-15" /></div>
         <header className="flex justify-between items-center px-5 py-3 gap-2.5 overflow-x-clip">
           <Link href="/">
             <picture>
@@ -108,16 +113,22 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <div className="container max-w-[1200px] mx-auto mt-5 px-2.5 md:px-0">{children}</div>
         </main>
 
-        <footer className="flex justify-between items-center px-3 py-2.5 gap-2.5">
+        <footer className="flex justify-between items-center px-3 py-2.5 gap-2.5 mb-20">
               <div></div>
-              <p className="flex items-center gap-2">Thoughtfully made by <ExternalLink href="https://kokoneko.art" className="flex items-center gap-1">KokoNekoArt <ArrowSquareOutIcon aria-hidden="true" className="size-3"/></ExternalLink> in 2026
-              <span className="inline-block drop-shadow-[0_0_25px_rgb(var(--body))]">
+              <p className="">Thoughtfully made by <ExternalLink href="https://kokoneko.art" className="inline-flex items-center gap-1">KokoNekoArt <ArrowSquareOutIcon aria-hidden="true" className="size-3"/></ExternalLink> in 2026
+              <span className="inline-block mx-1 drop-shadow-[0_0_25px_rgb(var(--body))]">
                 <span className="block h-5 w-4 bg-body [mask:url(/assets/star.svg)_center/contain_no-repeat]" />
               </span>
               <Link href="/attribution">Attributions</Link>
               </p>
               <div></div>
         </footer>
+
+        {tracks.length > 0 && (
+          <aside aria-label="Music player" className="fixed inset-x-3 bottom-3 z-30 mx-auto max-w-[700px]">
+            <MusicPlayer key={moon.theme} tracks={tracks} />
+          </aside>
+        )}
 
         <span id="external-hint" className="sr-only">(opens in a new window)</span>
         

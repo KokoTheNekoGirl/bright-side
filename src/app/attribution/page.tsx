@@ -3,12 +3,16 @@ import BrushStroke from '@/components/BrushStroke';
 import ExternalLink from '@/components/ExternalLink';
 import { SOURCES, type Source } from '@/lib/news/sources';
 import { ArrowUpRightIcon } from '@phosphor-icons/react/ssr';
+import { getAllTracks } from '@/lib/music/jamendo';
 
 export const metadata: Metadata = {
-  title: "Sources & Attribution",
-  description: "The publishers and creators whose stories appear on Look on the Bright✦Side.",
-  alternates: { canonical: "/attribution" },
+  title: 'Sources & Attribution',
+  description: 'The publishers, creators and musicians whose work appears on Look on the Bright✦Side.',
+  alternates: { canonical: '/attribution' },
 };
+
+// Playlists change daily; refresh the credits hourly like the rest of the site
+export const revalidate = 3600;
 
 /** How each kind of source is used, in plain words. */
 const HOW_USED: Record<Source['license'], string> = {
@@ -18,15 +22,17 @@ const HOW_USED: Record<Source['license'], string> = {
 };
 
 /*
- * Generated from src/lib/news/sources.ts: enable or add a source there
- * and it appears here automatically. Disabled sources aren't listed.
+ * Generated from src/lib/news/sources.ts and the music playlists:
+ * add a source or change a playlist and it appears here automatically.
+ * Disabled sources aren't listed.
  */
-export default function SourcesPage() {
+export default async function SourcesPage() {
   const active = SOURCES.filter((s) => s.enabled !== false);
   const groups = [
     { id: 'publishers', heading: 'Publishers', items: active.filter((s) => s.kind === 'article') },
     { id: 'channels', heading: 'Video channels', items: active.filter((s) => s.kind === 'video') },
   ];
+  const tracks = await getAllTracks();
 
   return (
     <div className="sources mx-auto flex w-full max-w-3xl flex-col gap-12 px-4 py-10">
@@ -41,8 +47,8 @@ export default function SourcesPage() {
       </hgroup>
 
       <p className="text-body">
-        Every story on Bright✦Side comes from one of these publishers and creators. All credit for the reporting,
-        writing and filming belongs to them. Please visit, follow and support their work.
+        Every story and song on Bright✦Side comes from one of these publishers, creators and musicians. All credit
+        for the reporting, writing, filming and music belongs to them. Please visit, follow and support their work.
       </p>
 
       {groups.map(
@@ -78,11 +84,53 @@ export default function SourcesPage() {
                         )}
                       </span>
                     )}
+                    {source.licenseNotice?.url && (
+                      <ExternalLink href={source.licenseNotice.url} className="source-link self-start text-sm text-accent">
+                        Republishing terms
+                      </ExternalLink>
+                    )}
                   </li>
                 ))}
               </ul>
             </section>
           ),
+      )}
+
+      {tracks.length > 0 && (
+        <section aria-labelledby="music" className="flex flex-col gap-4">
+          <h2 id="music" className="font-display text-lg-custom text-heading">
+            Music
+          </h2>
+          <p className="text-sm text-accent">
+            Streamed from{' '}
+            <ExternalLink href="https://www.jamendo.com" className="source-link">
+              Jamendo
+            </ExternalLink>
+            , unedited, under each artist’s Creative Commons licence. Bright✦Side is non-commercial and only plays
+            instrumental tracks released before 2022 in an effort to filter out AI-generated music.
+          </p>
+          <ul role="list" className="flex flex-col gap-2">
+            {tracks.map((t) => (
+              <li key={t.id}>
+                <ExternalLink href={t.trackUrl} className="source-link font-semibold text-heading">
+                  {t.title}
+                </ExternalLink>{' '}
+                by{' '}
+                <ExternalLink href={t.artistUrl} className="source-link">
+                  {t.artist}
+                </ExternalLink>
+                {t.license && (
+                  <>
+                    {' · '}
+                    <ExternalLink href={t.license.url} className="source-link text-sm text-accent">
+                      {t.license.name}
+                    </ExternalLink>
+                  </>
+                )}
+              </li>
+            ))}
+          </ul>
+        </section>
       )}
     </div>
   );

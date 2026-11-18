@@ -264,7 +264,7 @@ body {
   background-attachment: fixed;
 }
 
-.post-card, .nebula, .site-bg, .moon-hero, .moon-preview, .not-found, .pillar, a, span, img, picture, p, h1, h2, h3, h4, h5, h6, button {
+.post-card, .nebula, .site-bg, .moon-hero, .moon-preview, .not-found, .pillar, a, span, img, picture, p, h1, h2, h3, h4, h5, h6, button, svg {
   transition: 0.5s all ease-out;
 }
 
@@ -368,6 +368,17 @@ a.brush-link:is(:focus-visible, :hover) {
   animation: twinkle 6s ease-in-out infinite alternate;
 }
 
+.music-bar {
+  background: rgba(var(--primary), 0.15);
+  outline: 2px solid rgb(var(--primary));
+  box-shadow: 0 0 20px 0 rgba(var(--primary), 0.4);
+  backdrop-filter: blur(8px);
+}
+.player-status, .player-star { color: rgb(var(--primary)); }
+.player-button { color: rgb(var(--primary)); transition: filter .2s ease; }
+.player-button:is(:focus-visible, [aria-pressed="true"], :hover) { filter: drop-shadow(0 0 8px rgba(var(--primary), 1)); }
+.queue-track[aria-current="true"] { color: rgb(var(--primary)); font-weight: 600; }
+
 @keyframes twinkle {
   from { opacity: 0.25; }
   to   { opacity: 0.9; }
@@ -376,7 +387,7 @@ a.brush-link:is(:focus-visible, :hover) {
 /* Time for some responsivity */
 
 @media (hover: none) {
-  .filter-button:hover,a:hover:not([aria-current="page"]), button:hover:not([aria-pressed="true"]) {
+  .filter-button:hover,a:hover:not([aria-current="page"]), button:hover:not([aria-pressed="true"]),.player-button:hover {
     box-shadow: unest;
     filter:unset;
   }
@@ -407,5 +418,5 @@ a.brush-link:is(:focus-visible, :hover) {
   }
   .nebula::after { animation: none; opacity: 0.6; }
 
-  .menu-item a, .brush-link, .brush-link .brush, .category-tag, .pagination-link, .post-card, .nebula, .site-bg, .moon-hero, .moon-preview, .not-found, .pillar, a, span, img, picture, p, h1, h2, h3, h4, h5, h6, button { transition: none; }
+  .menu-item a, .brush-link, .brush-link .brush, .category-tag, .pagination-link, .post-card, .nebula, .site-bg, .moon-hero, .moon-preview, .not-found, .pillar, a, span, img, picture, p, h1, h2, h3, h4, h5, h6, button,svg { transition: none; }
 }
