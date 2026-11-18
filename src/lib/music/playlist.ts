@@ -38,18 +38,18 @@ export const PLAYLIST_LENGTH = 20;
 
 /** Tracks that always play first on these moons (Jamendo IDs). */
 export const PINNED: Partial<Record<MoonTheme, number[]>> = {
-  grow: [
-    1641226, // Lo-Fi Dream Hip-Hop by Anton Vlasov
-    1639304, // Lo-Fi Hip-Hop by Anton Vlasov
-  ],
-  appreciate: [
-    1894568, //Igor Pumphonia by Igor Pumphonia
-    1897489, //Lofi and Coffee by Jon J. Morin
-  ],
-  reflect: [
-    1861967, //Lofi t4 by Benedikt
-    1880756, // Lofi Hiphop Jazzy Trumpet by Joel Loopez
-  ],
+  // grow: [
+  //   1641226, // Lo-Fi Dream Hip-Hop by Anton Vlasov
+  //   1639304, // Lo-Fi Hip-Hop by Anton Vlasov
+  // ],
+  // appreciate: [
+  //   1894568, //Igor Pumphonia by Igor Pumphonia
+  //   1897489, //Lofi and Coffee by Jon J. Morin
+  // ],
+  // reflect: [
+  //   1861967, //Lofi t4 by Benedikt
+  //   1880756, // Lofi Hiphop Jazzy Trumpet by Joel Loopez
+  // ],
 };
 
 /** Tracks that never play: AI, wrong vibe, vocals, bad audio. */
