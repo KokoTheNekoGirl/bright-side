@@ -85,6 +85,13 @@
   background: var(--container-bg);
 }
 
+@layer base {
+  :focus-visible {
+    outline: 2px solid rgb(var(--primary));
+    outline-offset: 2px;
+  }
+}
+
 [data-phase="full"],
 [data-phase="blue"] {
   --moon-glow-alpha: 1;

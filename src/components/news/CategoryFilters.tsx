@@ -19,7 +19,7 @@ export default function CategoryFilters({ active, moon }: { active?: NewsFilter;
 
   return (
     <nav aria-label="Filter by category">
-      <ul role="list" className="category-filters flex justify-center flex-wrap gap-5">
+      <ul role="list" className="category-filters flex justify-center flex-wrap gap-2 md:gap-5">
         <li>
           <Link href="/news" aria-current={!active ? 'page' : undefined} data-category="all" className={button}>
             <SquaresFourIcon aria-hidden="true" weight="regular" className="size-4 shrink-0" />

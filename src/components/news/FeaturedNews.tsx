@@ -20,7 +20,7 @@ export default async function FeaturedNews({ moon, page = 1 }: { moon: MoonState
   const reflecting = isReflectionTheme(moon.theme);
 
   return (
-    <section aria-labelledby="featured-heading" className="featured-news flex w-full flex-col items-center gap-10">
+    <section aria-labelledby="featured-heading" className="featured-news flex w-full flex-col items-center gap-5 md:gap-10">
       <h2 id="featured-heading" className="text-center">
         {reflecting ? 'Featured Somber News' : 'Featured Good News'}
       </h2>
