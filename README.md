@@ -191,4 +191,4 @@ Sources live in `src/lib/news/sources.ts`. Before adding one, read the publisher
 ## Credits
 
 Design and development by [KokoNekoArt](https://kokoneko.art).
-Stories belong to their original publishers and creators, and music to its artists. See [Sources & credits](/sources).
+Stories belong to their original publishers and creators, and music to its artists. See [Sources & Attributions](/attribution).
