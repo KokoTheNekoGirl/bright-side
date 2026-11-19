@@ -6,12 +6,29 @@ import {
   QueueIcon,
   ShuffleIcon,
   SpeakerSimpleHighIcon,
+  SpeakerSimpleLowIcon,
   SpeakerSimpleSlashIcon,
 } from '@phosphor-icons/react';
 import ExternalLink from '@/components/ExternalLink';
 import type { Track } from '@/lib/music/jamendo';
+import { VIDEO_EVENT, type VideoEventDetail } from '@/lib/video-audio';
 
 const STORAGE_KEY = 'bright-side:music';
+
+/** Volume steps the speaker button cycles through. Change the numbers to taste (0–1). */
+const VOLUME = { quiet: 0.1, loud: 0.3 } as const;
+type Volume = 'muted' | keyof typeof VOLUME;
+const NEXT_VOLUME: Record<Volume, Volume> = { muted: 'quiet', quiet: 'loud', loud: 'muted' };
+
+/*
+ * iPhones and iPads ignore volume set by websites (only the device buttons work),
+ * so there the button just switches between muted and on.
+ */
+function canSetVolume() {
+  const test = new Audio();
+  test.volume = 0.5;
+  return test.volume === 0.5;
+}
 
 /** What's remembered between visits, in this browser only. */
 interface Saved {
@@ -19,7 +36,8 @@ interface Saved {
   trackId: number;
   time: number;
   playing: boolean;
-  muted: boolean;
+  volume: Volume;
+  muted?: boolean; // older saves
   shuffle: boolean;
 }
 
@@ -87,7 +105,49 @@ function Player({ tracks }: { tracks: Track[] }) {
   const [pos, setPos] = useState(() =>
     Math.max(0, order.findIndex((i) => tracks[i].id === saved.trackId)),
   );
-  const [muted, setMuted] = useState(saved.muted ?? false);
+  const [volumeWorks] = useState(canSetVolume);
+  const [volume, setVolume] = useState<Volume>(() => {
+    const v = saved.volume ?? (saved.muted ? 'muted' : 'quiet');
+    return !volumeWorks && v === 'quiet' ? 'loud' : v;
+  });
+  // Phones and tablets mute for videos; desktops drop to quiet
+  const [isMobile] = useState(
+    () => !volumeWorks || window.matchMedia('(pointer: coarse)').matches,
+  );
+
+  // Videos playing right now (by id). While any play, the music steps aside.
+  const videos = useRef(new Set<string>());
+  const [ducked, setDucked] = useState(false);
+
+  useEffect(() => {
+    const onVideo = (e: Event) => {
+      const { id, playing: videoPlaying } = (e as CustomEvent<VideoEventDetail>).detail;
+      if (videoPlaying) videos.current.add(id);
+      else videos.current.delete(id);
+      setDucked(videos.current.size > 0);
+    };
+    window.addEventListener(VIDEO_EVENT, onVideo);
+    return () => window.removeEventListener(VIDEO_EVENT, onVideo);
+  }, []);
+
+  // What actually plays: the listener's choice, stepped aside while a video plays.
+  // Their own choice is what gets saved.
+  const muted = volume === 'muted' || (ducked && isMobile);
+  const level = volume === 'muted' ? 0 : ducked ? Math.min(VOLUME.quiet, VOLUME[volume]) : VOLUME[volume];
+
+  const cycleVolume = () => {
+    // Touching the volume during a video hands control back to the listener
+    if (ducked) {
+      videos.current.clear();
+      setDucked(false);
+    }
+    setVolume((v) => (volumeWorks ? NEXT_VOLUME[v] : v === 'muted' ? 'loud' : 'muted'));
+  };
+
+  // Apply the volume level (muting is handled by the muted attribute)
+  useEffect(() => {
+    if (audioRef.current && level > 0) audioRef.current.volume = level;
+  }, [level]);
   const [playing, setPlaying] = useState(false);
   const [started, setStarted] = useState(saved.trackId !== undefined);
   const [queueOpen, setQueueOpen] = useState(false);
@@ -138,10 +198,10 @@ function Player({ tracks }: { tracks: Track[] }) {
       trackId: track.id,
       time: Math.floor(audioRef.current?.currentTime ?? 0),
       playing,
-      muted,
+      volume,
       shuffle,
     });
-  }, [started, order, track, playing, muted, shuffle, tracks]);
+  }, [started, order, track, playing, volume, shuffle, tracks]);
 
   // Close the queue with Escape or a click outside the player
   useEffect(() => {
@@ -171,7 +231,7 @@ function Player({ tracks }: { tracks: Track[] }) {
       trackId: track.id,
       time: Math.floor(audio.currentTime),
       playing: !audio.paused,
-      muted,
+      volume,
       shuffle,
     });
   };
@@ -296,9 +356,7 @@ function Player({ tracks }: { tracks: Track[] }) {
           <ExternalLink href={track.trackUrl} className="player-link">
             {track.title}
           </ExternalLink>{' '}
-          <span aria-hidden="true" className="player-star">
-            ✦
-          </span>{' '}
+          by{' '}
           <ExternalLink href={track.artistUrl} className="player-link">
             {track.artist}
           </ExternalLink>
@@ -326,16 +384,15 @@ function Player({ tracks }: { tracks: Track[] }) {
 
         <button
           type="button"
-          onClick={() => setMuted((m) => !m)}
-          aria-pressed={muted}
-          aria-label="Mute"
+          onClick={cycleVolume}
+          aria-label={ducked ? `Volume: ${volume}, ${isMobile ? 'muted' : 'lowered'} while a video plays` : `Volume: ${volume}`}
+          data-ducked={ducked || undefined}
           className="player-button shrink-0 cursor-pointer"
+          data-volume={volume}
         >
-          {muted ? (
-            <SpeakerSimpleSlashIcon aria-hidden="true" size={20} />
-          ) : (
-            <SpeakerSimpleHighIcon aria-hidden="true" size={20} />
-          )}
+          {volume === 'muted' && <SpeakerSimpleSlashIcon aria-hidden="true" size={20} />}
+          {volume === 'quiet' && <SpeakerSimpleLowIcon aria-hidden="true" size={20} />}
+          {volume === 'loud' && <SpeakerSimpleHighIcon aria-hidden="true" size={20} />}
         </button>
       </div>
 
