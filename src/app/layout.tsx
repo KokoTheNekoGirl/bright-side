@@ -116,7 +116,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         <ThemeNotice />
         <div aria-hidden="true" className="site-bg pointer-events-none fixed top-0 left-0 -z-20 h-lvh w-full" />
         <div>{/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/assets/bg.svg" alt="" aria-hidden="true" className="bg-element h-auto w-auto mix-blend-screen pointer-events-none fixed top-0 right-0 -z-15" />
+            <img src="/assets/bg.svg" alt="" aria-hidden="true" className="bg-element h-auto w-6/12 mix-blend-screen pointer-events-none fixed top-0 right-0 -z-15" />
         </div>
         <header className="flex justify-between items-center px-5 py-3 gap-2.5 overflow-x-clip">
           <Link href="/">
