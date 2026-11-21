@@ -102,7 +102,7 @@ export default function AboutPage() {
           return (
               <li
                 key={pillar.label}
-                className="pillar flex flex-col gap-2 rounded-xl items-center md:items-start bg-radial-[at_36%_11%] from-surface to-canvas px-6 py-5 shadow-card outline-2 outline-primary"
+                className="pillar flex flex-col gap-2 rounded-xl items-center md:items-start bg-container px-6 py-5 shadow-card outline-2 outline-primary"
               >
                 <p className="md-subheading flex gap-1 items-center text-center md:text-left"><IconComponent aria-hidden="true" size={24} weight="regular" />{pillar.label}</p>
                 <h3 className="lg-heading text-center md:text-left">{pillar.title}</h3>

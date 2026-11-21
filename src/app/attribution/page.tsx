@@ -4,10 +4,11 @@ import ExternalLink from '@/components/ExternalLink';
 import { SOURCES, type Source } from '@/lib/news/sources';
 import { ArrowUpRightIcon } from '@phosphor-icons/react/ssr';
 import { getAllTracks } from '@/lib/music/jamendo';
+import { VISUAL_CREDITS } from '@/lib/credits/data';
 
 export const metadata: Metadata = {
   title: 'Sources & Attribution',
-  description: 'The publishers, creators and musicians whose work appears on Look on the Bright✦Side.',
+  description: 'The publishers, creators, artists, and musicians whose work appears on Look on the Bright✦Side.',
   alternates: { canonical: '/attribution' },
 };
 
@@ -94,6 +95,59 @@ export default async function SourcesPage() {
               </ul>
             </section>
           ),
+      )}
+
+       {VISUAL_CREDITS.length > 0 && (
+        <section aria-labelledby="visuals" className="flex flex-col gap-4">
+          <h2 id="visuals" className="font-display text-lg-custom text-heading">
+            Icons &amp; Illustrations
+          </h2>
+          <p className="text-sm text-accent">
+            Hero vector graphics and site logo design are by the developer, <ExternalLink href="https://kokoneko.art">KokoNekoArt</ExternalLink>.
+          </p>
+          <ul role="list" className="flex flex-col gap-4">
+            {VISUAL_CREDITS.map((v) => (
+              <li key={v.id} className="flex flex-col gap-0.5 wrap-anywhere">
+                <span>
+                  <ExternalLink href={v.url} className="source-link font-semibold text-heading">
+                    {v.name}
+                  </ExternalLink>
+                  {v.author && (
+                    <>
+                      {' '}by{' '}
+                      {v.author.url ? (
+                        <ExternalLink href={v.author.url} className="source-link">
+                          {v.author.name}
+                        </ExternalLink>
+                      ) : (
+                        v.author.name
+                      )}
+                    </>
+                  )}
+                  {v.source && (
+                    <>
+                      {' '}via{' '}
+                      <ExternalLink href={v.source.url} className="source-link">
+                        {v.source.name}
+                      </ExternalLink>
+                    </>
+                  )}
+                </span>
+                <span className="text-sm text-accent">{v.usedFor}</span>
+                <span className="text-sm text-accent">
+                  Licence:{' '}
+                  {v.license.url ? (
+                    <ExternalLink href={v.license.url} className="source-link">
+                      {v.license.name}
+                    </ExternalLink>
+                  ) : (
+                    v.license.name
+                  )}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
       )}
 
       {tracks.length > 0 && (

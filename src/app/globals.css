@@ -40,22 +40,28 @@
 
   --eclipse: 197, 41, 60;
   --eclipse-text: 255, 219, 219;
+  --eclipse-accent: 245, 110, 122;
   --accent-blue: 95, 179, 228; /* Info */
   --accent-green: 142, 235, 135; /* Success */
   --accent-yellow: 236, 205, 112; /* Warning */
   --accent-orange: 216, 153, 111;
   --accent-red: 217, 72, 72; /* Error */
 
-  --pure-light: 255, 255, 255;
-  --pure-dark: 0, 0, 0;
-
-  --moon-glow-alpha: 0.5;
-
   ::selection, ::-moz-selection {
     background-color: rgb( var( --primary ) );
     color: rgb( var( --pure-dark ) );
     text-shadow: unset!important;
   }
+
+  /* Sun Theme Colors : RGB Value */
+
+
+  /* Other Defaults : RGB Value */
+
+  --pure-light: 255, 255, 255;
+  --pure-dark: 0, 0, 0;
+
+  --moon-glow-alpha: 0.5;
 }
 
 @theme inline {
@@ -73,7 +79,7 @@
   --color-secondary: rgb(var(--secondary));
   --color-primary: rgb(var(--primary));
   --color-eclipse: rgb(var(--eclipse));
-  --color-eclipse-text: rgb(var(--eclipse-text));
+  --color-eclipse-text: rgb(var(--eclipse-accent));
 
   /* shadow-card, text-shadow-canvas, text-shadow-surface */
   --shadow-card: 8px 8px 20px 0 rgba(var(--deep), 0.5);
@@ -120,8 +126,8 @@ body[data-moon-mode="eclipse"], .moon-preview[data-moon-mode="eclipse"] {
   --surface: 58, 33, 62;
   --canvas: 30, 20, 42;
   --deep: 14, 9, 22;
-  --text: rgba( var( --eclipse-text ),0.8 );
-  --secondary: var(--eclipse-text);
+  --text: rgba( var( --eclipse-accent ),0.8 );
+  --secondary: var(--eclipse-accent);
   .outline-secondary {
     outline-color: rgb( var( --primary ) );
   }
@@ -137,14 +143,201 @@ body[data-moon-mode="blue"], .moon-preview[data-moon-mode="blue"] {
   --deep: 6, 14, 34;
 }
 
-/* I'll come back for you...*/
-/* @media (prefers-color-scheme: light) {
-  :root, body {
-    --text: rgb( var(--deep) );
-    --body-bg: radial-gradient(at top left, rgb( var(--pure-light) ), rgb( var(--body) ));
-    --container-bg: radial-gradient(at top left, rgb( var(--body) ), rgb( var(--secondary) ));
+/* ------------------------------------------------------------------ *
+ * Bright (solar) theme: <html data-theme="bright" data-sun="…">
+ * Set by the <head> script in layout.tsx before the page paints.
+ * Import this after globals.css.
+ * ------------------------------------------------------------------ */
+
+/* Sun palettes: light = main background, accent = the gradient's second colour.
+   Black text measures 8.8:1 or more on every one of these (WCAG AAA). */
+:root[data-sun="dawn"]      { --sun-light: 255, 211, 172; --sun-accent: 255, 132, 177; }
+:root[data-sun="midday"]    { --sun-light: 190, 231, 255; --sun-accent: 95, 179, 228; }
+:root[data-sun="afternoon"] { --sun-light: 255, 200, 126; --sun-accent: 253, 149, 89; }
+:root[data-sun="twilight"],
+:root[data-sun="eclipse"]   { --sun-light: 187, 178, 247; --sun-accent: 133, 165, 251; }
+
+/*
+ * Bright values. Also applied to body[data-moon-mode] so blue moon and lunar
+ * eclipse colours (set on <body>) can't pull night colours into this theme.
+ */
+:root[data-theme="bright"],
+:root[data-theme="bright"] body[data-moon-mode] {
+  --deep: 255, 255, 255;
+  --canvas: var(--sun-light);
+  --surface: var(--sun-light);
+  --accent: 0, 0, 0;
+  --body: 0, 0, 0;
+  --header: 0, 0, 0;
+  --primary: 0, 96, 152;
+  --secondary: 0, 96, 152;
+  --sun: 255, 242, 169;
+
+  --text: rgb(var(--body));
+  --body-bg: radial-gradient(at top left, rgb(var(--pure-light)), rgb(var(--sun-light)));
+  --container-bg: radial-gradient(at top left, rgb( var(--sun) ), rgb( var(--sun-light) ));
+  --hero-bg: linear-gradient(135deg, rgb(var(--sun-light)), rgb(var(--sun-accent)));
+
+  ::selection, ::-moz-selection {
+    background-color: rgb( var( --pure-light ) );
+    color: rgb( var( --pure-dark ) );
+    text-shadow: unset!important;
   }
-} */
+  .text-primary {
+    color:rgb( var( --pure-dark ) )!important;
+  }
+}
+
+:root[data-sun="twilight"] .sun-hero[data-sun-phase="twilight"] {
+  --hero-bg: linear-gradient(135deg, rgb(190, 231, 255), rgb(var(--sun-light)), rgb(var(--sun-accent)));
+}
+
+/* Category tags: black text and icons, as in the Figma (night pastels are too light here) */
+:root[data-theme="bright"] {
+  --category-orange: 0, 0, 0;
+  --category-yellow: 0, 0, 0;
+  --category-green: 0, 0, 0;
+  --category-blue: 0, 0, 0;
+  --category-red: 191, 18, 48;
+}
+
+/* No glows or text shadows on light backgrounds */
+:root[data-theme="bright"] .moon-glow,
+:root[data-theme="bright"] [class*="text-shadow"] {
+  filter: none;
+  text-shadow: none;
+}
+
+:root[data-theme="bright"] .bg-element {
+  mix-blend-mode: soft-light;
+}
+
+/* ---------- Which hero shows ---------- */
+
+:root[data-theme="bright"] .night-only { display: none; }
+:root:not([data-theme="bright"]) .bright-only { display: none; }
+
+.sun-hero { display: none; background: var(--hero-bg); }
+.sun-hero:not([data-sun-phase="eclipse"]) {
+  --clouds: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='500'%3E%3Cfilter id='c' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.004 0.009' numOctaves='5' seed='8'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 1.8 0 0 0 -0.75'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23c)'/%3E%3C/svg%3E");
+  background: var(--clouds) center / cover, var(--hero-bg);
+}
+:root[data-sun="dawn"] .sun-hero[data-sun-phase="dawn"],
+:root[data-sun="midday"] .sun-hero[data-sun-phase="midday"],
+:root[data-sun="afternoon"] .sun-hero[data-sun-phase="afternoon"],
+:root[data-sun="twilight"] .sun-hero[data-sun-phase="twilight"],
+:root[data-sun="eclipse"] .sun-hero[data-sun-phase="eclipse"] {
+  display: flex;
+}
+
+/* Solar eclipse card: night deep/canvas with coral (7.7:1+ on canvas, AAA) */
+.sun-hero[data-sun-phase="eclipse"] {
+  --header: 255, 255, 255;
+  --body: 255, 255, 255;
+  --primary: 253, 149, 89;
+  background: radial-gradient(at center top, rgb(16, 28, 59), rgb(9, 14, 29));
+}
+.sun-hero[data-sun-phase="eclipse"] .sun-eyebrow,
+.sun-hero[data-sun-phase="eclipse"] .sun-highlight {
+  color: rgb(253, 149, 89);
+}
+
+/* ---------- Solar: one accent (bahama blue), no glows ---------- */
+
+/* Every accent colour becomes bahama blue (borders, outlines, icons, fills) */
+:root[data-theme="bright"],
+:root[data-theme="bright"] body[data-moon-mode] {
+  --secondary: 0, 96, 152;
+  --eclipse: 0, 96, 152;
+  --accent-red: 0, 96, 152;
+  --accent-orange: 0, 96, 152;
+  --accent-yellow: 0, 96, 152;
+  --accent-green: 0, 96, 152;
+  --accent-blue: 0, 96, 152;
+  --category-orange: 0, 96, 152;
+  --category-yellow: 0, 96, 152;
+  --category-green: 0, 96, 152;
+  --category-blue: 0, 96, 152;
+  --category-red: 0, 96, 152;
+}
+
+/* Coloured TEXT is black: bahama blue is under 4.5:1 on some sun backgrounds.
+   The solar eclipse card keeps its coral. */
+:root[data-theme="bright"]
+  :is(.text-red, .text-orange, .text-yellow, .text-green, .text-blue,
+      .text-eclipse, .text-primary, .text-secondary, .text-accent)
+  :not(.sun-hero[data-sun-phase="eclipse"] *) {
+  color: rgb(0, 0, 0);
+}
+
+/* No glows, at rest or on hover/focus */
+:root[data-theme="bright"]
+  :is(.moon-glow, .filter-button, .preview-button, .player-button, .theme-toggle,
+      .menu-item a, a.category-tag, a.source-link, a.brush-link),
+:root[data-theme="bright"]
+  :is(.filter-button, .preview-button, .player-button, .menu-item a,
+      a.category-tag, a.source-link, a.brush-link):is(:hover, :focus-visible) {
+  box-shadow: none;
+  filter: none;
+  text-shadow: none;
+}
+
+/* States that used a glow need another visible signal */
+:root[data-theme="bright"] :is(.filter-button, .preview-button)[aria-current="page"],
+:root[data-theme="bright"] :is(.preview-button, .player-button, .theme-toggle)[aria-pressed="true"] {
+  outline: 2px solid rgb(0, 96, 152);
+  background: rgba(0, 96, 152, 0.12);
+}
+@media (hover: hover) {
+  :root[data-theme="bright"] :is(.filter-button, .preview-button):hover {
+    background: rgba(0, 96, 152, 0.12);
+  }
+}
+
+/* ---------- Solar: body text 200 heavier (DM Sans only) ---------- */
+
+/* Text with no weight class: 400 → 600 */
+:root[data-theme="bright"] body { font-weight: 600; }
+
+/* Text with a weight class: each step +200.
+   Skips Fraunces, subheadings and meta text (and anything inside them). */
+:root[data-theme="bright"] .font-light:not(.font-display, .md-subheading, .sun-eyebrow, .meta-text, :is(.font-display, .md-subheading, .sun-eyebrow, .meta-text) *) { font-weight: 500; }
+:root[data-theme="bright"] .font-normal:not(.font-display, .md-subheading, .sun-eyebrow, .meta-text, :is(.font-display, .md-subheading, .sun-eyebrow, .meta-text) *) { font-weight: 600; }
+:root[data-theme="bright"] .font-medium:not(.font-display, .md-subheading, .sun-eyebrow, .meta-text, :is(.font-display, .md-subheading, .sun-eyebrow, .meta-text) *) { font-weight: 700; }
+:root[data-theme="bright"] .font-semibold:not(.font-display, .md-subheading, .sun-eyebrow, .meta-text, :is(.font-display, .md-subheading, .sun-eyebrow, .meta-text) *) { font-weight: 800; }
+:root[data-theme="bright"] .font-bold:not(.font-display, .md-subheading, .sun-eyebrow, .meta-text, :is(.font-display, .md-subheading, .sun-eyebrow, .meta-text) *) { font-weight: 900; }
+
+/* The excluded styles keep their night weights even when they have no weight class */
+:root[data-theme="bright"] :is(.font-display, .md-subheading, .sun-eyebrow, .meta-text):not([class*="font-light"], [class*="font-normal"], [class*="font-medium"], [class*="font-semibold"], [class*="font-bold"]) {
+  font-weight: 400;
+}
+
+/* ---------- One-time light mode notice ---------- */
+
+.theme-notice { display: none; }
+:root[data-theme-notice] .theme-notice {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin: 0.75rem;
+  padding: 1.25rem 1.5rem;
+  border-radius: 1rem;
+  /* High contrast: these visitors may find dark screens hard to read */
+  background: rgb(255, 255, 255);
+  color: rgb(0, 0, 0);
+  outline: 2px solid rgb(0, 96, 152);
+}
+.theme-notice-button {
+  border-radius: 9999px;
+  padding: 0.5rem 1rem;
+  background: rgb(190, 231, 255);
+  color: rgb(0, 0, 0);
+  outline: 2px solid rgb(0, 96, 152);
+}
+.theme-notice-button:focus-visible {
+  outline-width: 3px;
+  outline-offset: 2px;
+}
 
 /* Typography ~ */
 h1, .h1, .xxlg-heading {
@@ -252,7 +445,7 @@ p, .p, button  {
   font-family: var(--font-sans);
   font-style: normal;
   font-weight: 400;
-  color: var( rgb( --accent ));
+  color: rgb( var( --accent ));
 }
 
 body {

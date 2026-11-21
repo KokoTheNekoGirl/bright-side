@@ -115,7 +115,7 @@ export default function PostCard({ post }: { post: Post }) {
         data-source={post.source.id}
         data-kind={post.kind}
         data-graphic={post.graphic || undefined}
-        className="post-card flex w-full md:max-w-fit flex-col items-start gap-2.5 overflow-hidden rounded-xl bg-radial-[at_36%_11%] from-surface to-canvas px-7 py-5 shadow-card outline-2 outline-secondary"
+        className="post-card flex w-full md:max-w-fit flex-col items-start gap-2.5 overflow-hidden rounded-xl bg-container px-7 py-5 shadow-card outline-2 outline-secondary"
       >
         <div className="flex flex-wrap gap-x-3 gap-y-1">
           {post.categories.map((id) => (

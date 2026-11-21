@@ -215,6 +215,10 @@ function sortPosts(posts: Post[]): Post[] {
  */
 export async function getPosts(): Promise<Post[]> {
   const preview = process.env.NODE_ENV !== 'production' ? process.env.NEWS_PREVIEW : undefined;
+  if (preview === 'sample') { 
+    const { SAMPLE_POSTS } = await import('./sample-posts');
+    return sortPosts(SAMPLE_POSTS);
+  } //uncomment if you've created sample-posts.ts
   if (preview === 'empty') return [];
 
   const results = await Promise.allSettled(

@@ -13,6 +13,11 @@
 # testing
 /coverage
 /src/app/dev/*
+/tests/*
+*.test.mts
+sample-posts.ts
+hidden-*
+e2e-results.txt
 
 # next.js
 /.next/
@@ -43,3 +48,11 @@ next-env.d.ts
 
 #vs code
 .vscode
+
+# Playwright
+node_modules/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/

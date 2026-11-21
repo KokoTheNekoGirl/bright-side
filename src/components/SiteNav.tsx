@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { Fragment, useEffect, useState } from 'react';
 import { ListIcon, XIcon } from '@phosphor-icons/react';
 import BrushStroke from './BrushStroke';
+import ThemeToggle from '@/components/sun/ThemeToggle';
 
 const LINKS = [
   { href: '/about', label: 'About', match: (p: string) => p.startsWith('/about') },
@@ -86,6 +87,8 @@ export default function SiteNav() {
             </Fragment>
           );
         })}
+        <Star />
+        <ThemeToggle />
       </ul>
     </nav>
   );

@@ -10,13 +10,17 @@ import ExternalLink from '@/components/ExternalLink';
 import SiteNav from '@/components/SiteNav';
 import MusicPlayer from '@/components/MusicPlayer';
 import { getPlaylist } from '@/lib/music/jamendo';
+import ThemeNotice from '@/components/sun/ThemeNotice';
+import { themeScript } from '@/lib/sun/theme';
+import { nearbySolarEclipse } from '@/lib/sun/solar-eclipse';
+
+const sunPreview = process.env.NODE_ENV !== 'production' ? process.env.SUN_PREVIEW : undefined; //remove once live
 
 const logoCommon = { alt: `${SITE_TITLE} Logo`, title: SITE_TITLE, fetchPriority: 'high' as const };
 
 const {
   props: { srcSet: logoDesktop },
 } = getImageProps({ ...logoCommon, src: '/assets/logo-bright.png', width: 400, height: 94 });
-
 const { props: logoMobile } = getImageProps({
   ...logoCommon,
   src: '/assets/logo-bright-mobile.png',
@@ -24,12 +28,22 @@ const { props: logoMobile } = getImageProps({
   height: 70,
 });
 
+const {
+  props: { srcSet: logoDesktopDark },
+} = getImageProps({ ...logoCommon, src: '/assets/logo-night.png', width: 400, height: 94 });
+const { props: logoMobileDark } = getImageProps({
+  ...logoCommon,
+  src: '/assets/logo-night-mobile.png',
+  width: 160,
+  height: 70,
+});
+
 // Recalculate the moon (and the body mode) at most once an hour
 export const revalidate = 3600;
 
-const frauncesDisplay = Fraunces({ variable: "--font-fraunces-display", subsets: ["latin"], weight: ["400", "500", "600"] });
+const frauncesDisplay = Fraunces({ variable: "--font-fraunces-display", subsets: ["latin"], weight: ["400", "500", "600","700"] });
 
-const DMsans = DM_Sans({ variable: "--font-dm-sans", subsets: ["latin"], weight: ["400", "500","600"], });
+const DMsans = DM_Sans({ variable: "--font-dm-sans", subsets: ["latin"], weight: ["400", "500","600","700","800","900"], });
 
 const moon = getMoonState();
 
@@ -93,17 +107,29 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="en"
       className={`${frauncesDisplay.variable} ${DMsans.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript(nearbySolarEclipse(), sunPreview) }} />
+      </head>
       <body data-moon-mode={moon.mode} className="min-h-screen overflow-x-hidden flex flex-col">
+        <ThemeNotice />
         <div aria-hidden="true" className="site-bg pointer-events-none fixed top-0 left-0 -z-20 h-lvh w-full" />
-        <div><Image src="/assets/bg.svg" width={800} height={800} alt="" loading="lazy" aria-hidden="true" className="bg-element mix-blend-screen pointer-events-none fixed top-0 right-0 -z-15" /></div>
+        <div>{/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/assets/bg.svg" alt="" aria-hidden="true" className="bg-element h-auto w-auto mix-blend-screen pointer-events-none fixed top-0 right-0 -z-15" />
+        </div>
         <header className="flex justify-between items-center px-5 py-3 gap-2.5 overflow-x-clip">
           <Link href="/">
-            <picture>
-              <source media="(min-width: 64rem)" srcSet={logoDesktop} />
-              {/* eslint-disable-next-line jsx-a11y/alt-text */}
-              <img {...logoMobile} className="h-[70px] w-auto lg:h-[94px]" />
-            </picture>
+            {/* eslint-disable @next/next/no-img-element, jsx-a11y/alt-text */}
+              <picture className="night-only">
+                <source media="(min-width: 64rem)" srcSet={logoDesktop} />
+                <img {...logoMobile} className="h-[70px] w-auto lg:h-[94px]" />
+              </picture>
+              <picture className="bright-only">
+                <source media="(min-width: 64rem)" srcSet={logoDesktopDark} />
+                <img {...logoMobileDark} className="h-[70px] w-auto lg:h-[94px]" />
+              </picture>
+              {/* eslint-enable @next/next/no-img-element, jsx-a11y/alt-text */}
           </Link>
           <SiteNav />
         </header>

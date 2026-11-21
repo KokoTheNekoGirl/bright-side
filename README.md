@@ -163,8 +163,9 @@ Set these in `.env.local` to check different moons and states without waiting a 
 |---|---|---|
 | `MOON_PREVIEW` | `full`, `waning-crescent`, `blue`, `eclipse` | Forces a phase or special mode |
 | `MOON_PREVIEW_DATE` | `2026-03-03` | Calculates the moon for a specific date |
-| `NEWS_PREVIEW` | `empty` | Previews the error state with no live feed |
+| `NEWS_PREVIEW` | `empty`,`sample` | Previews the error state or sample feed with no real content |
 
+Sample posts file needs to be placed in src/lib/news/sample-posts.ts for testing sample sate.
 ---
 
 ## Adding a source
