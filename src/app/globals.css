@@ -26,7 +26,7 @@
   }
 }
 
-:root {
+:root, :root[data-theme="bright"] .moon-preview {
 
   /* Default Theme Colors : RGB Value */
   --deep: 9, 14, 29;
@@ -52,9 +52,6 @@
     color: rgb( var( --pure-dark ) );
     text-shadow: unset!important;
   }
-
-  /* Sun Theme Colors : RGB Value */
-
 
   /* Other Defaults : RGB Value */
 
@@ -106,6 +103,7 @@
 @utility moon-glow {
   filter: drop-shadow(0 0 50px rgba(var(--primary), var(--moon-glow-alpha)));
 }
+
 /* Category colour per element: --cat = that category's RGB numbers */
 :where(.filter-button, .category-tag) { --cat: var(--primary); }
 [data-color="orange"] { --cat: var(--accent-orange); }
@@ -143,32 +141,21 @@ body[data-moon-mode="blue"], .moon-preview[data-moon-mode="blue"] {
   --deep: 6, 14, 34;
 }
 
-/* ------------------------------------------------------------------ *
- * Bright (solar) theme: <html data-theme="bright" data-sun="…">
- * Set by the <head> script in layout.tsx before the page paints.
- * Import this after globals.css.
- * ------------------------------------------------------------------ */
+/* Here comes the sun ~ (high contrast, light mode) */
 
-/* Sun palettes: light = main background, accent = the gradient's second colour.
-   Black text measures 8.8:1 or more on every one of these (WCAG AAA). */
+/* sunlight changes depending on the time of day */
 :root[data-sun="dawn"]      { --sun-light: 255, 211, 172; --sun-accent: 255, 132, 177; }
 :root[data-sun="midday"]    { --sun-light: 190, 231, 255; --sun-accent: 95, 179, 228; }
 :root[data-sun="afternoon"] { --sun-light: 255, 200, 126; --sun-accent: 253, 149, 89; }
 :root[data-sun="twilight"],
 :root[data-sun="eclipse"]   { --sun-light: 187, 178, 247; --sun-accent: 133, 165, 251; }
 
-/*
- * Bright values. Also applied to body[data-moon-mode] so blue moon and lunar
- * eclipse colours (set on <body>) can't pull night colours into this theme.
- */
+/* bright theme root */
 :root[data-theme="bright"],
 :root[data-theme="bright"] body[data-moon-mode] {
-  --deep: 255, 255, 255;
-  --canvas: var(--sun-light);
-  --surface: var(--sun-light);
-  --accent: 0, 0, 0;
-  --body: 0, 0, 0;
-  --header: 0, 0, 0;
+  --accent: var(--pure-dark);
+  --body: var(--pure-dark);
+  --header: var(--pure-dark);
   --primary: 0, 96, 152;
   --secondary: 0, 96, 152;
   --sun: 255, 242, 169;
@@ -183,16 +170,39 @@ body[data-moon-mode="blue"], .moon-preview[data-moon-mode="blue"] {
     color: rgb( var( --pure-dark ) );
     text-shadow: unset!important;
   }
-  .text-primary {
-    color:rgb( var( --pure-dark ) )!important;
+  .text-primary, .text-white {
+    color:rgb( var( --pure-dark ) );
   }
 }
 
+:root[data-theme="bright"] .bg-element {
+  mix-blend-mode: soft-light;
+}
+
+/* twilight time has a slightly different style */
 :root[data-sun="twilight"] .sun-hero[data-sun-phase="twilight"] {
   --hero-bg: linear-gradient(135deg, rgb(190, 231, 255), rgb(var(--sun-light)), rgb(var(--sun-accent)));
 }
+:root[data-theme="bright"][data-sun="twilight"] body[data-moon-mode]{
+  --container-bg: radial-gradient(at top left, rgb(190, 231, 255), rgb( var(--sun-light) ))!important;
+}
 
-/* Category tags: black text and icons, as in the Figma (night pastels are too light here) */
+/* sun hero has a decortive glow */
+:root[data-theme="bright"] .sun-hero {
+  --sun-glow-color: var(--sun);
+}
+
+:root[data-theme="bright"] .sun-hero[data-sun-phase="twilight"],
+:root[data-theme="bright"] .sun-hero[data-sun-phase="afternoon"],
+:root[data-theme="bright"] .sun-hero[data-sun-phase="eclipse"] {
+  --sun-glow-color: 253, 149, 89;
+}
+
+@utility sun-image {
+  filter: drop-shadow(0 0 50px rgba(var(--sun-glow-color), 1));
+}
+
+/* category tags loose their color. */
 :root[data-theme="bright"] {
   --category-orange: 0, 0, 0;
   --category-yellow: 0, 0, 0;
@@ -201,15 +211,10 @@ body[data-moon-mode="blue"], .moon-preview[data-moon-mode="blue"] {
   --category-red: 191, 18, 48;
 }
 
-/* No glows or text shadows on light backgrounds */
-:root[data-theme="bright"] .moon-glow,
+/* no glows or text shadows on light backgrounds */
 :root[data-theme="bright"] [class*="text-shadow"] {
   filter: none;
   text-shadow: none;
-}
-
-:root[data-theme="bright"] .bg-element {
-  mix-blend-mode: soft-light;
 }
 
 /* ---------- Which hero shows ---------- */
@@ -245,8 +250,7 @@ body[data-moon-mode="blue"], .moon-preview[data-moon-mode="blue"] {
 /* ---------- Solar: one accent (bahama blue), no glows ---------- */
 
 /* Every accent colour becomes bahama blue (borders, outlines, icons, fills) */
-:root[data-theme="bright"],
-:root[data-theme="bright"] body[data-moon-mode] {
+:root[data-theme="bright"] {
   --secondary: 0, 96, 152;
   --eclipse: 0, 96, 152;
   --accent-red: 0, 96, 152;
@@ -266,13 +270,17 @@ body[data-moon-mode="blue"], .moon-preview[data-moon-mode="blue"] {
 :root[data-theme="bright"]
   :is(.text-red, .text-orange, .text-yellow, .text-green, .text-blue,
       .text-eclipse, .text-primary, .text-secondary, .text-accent)
-  :not(.sun-hero[data-sun-phase="eclipse"] *) {
-  color: rgb(0, 0, 0);
+  :not(.sun-hero[data-sun-phase="eclipse"] *),
+:root[data-theme="bright"]
+  .md-heading:is(.text-red, .text-orange, .text-yellow, .text-green, .text-blue,
+      .text-purple, .text-eclipse, .text-primary, .text-secondary, .text-accent) {
+  color: rgb( var( --pure-dark ) );
+  filter: none;
 }
 
 /* No glows, at rest or on hover/focus */
 :root[data-theme="bright"]
-  :is(.moon-glow, .filter-button, .preview-button, .player-button, .theme-toggle,
+  :is(.filter-button, .preview-button, .player-button,
       .menu-item a, a.category-tag, a.source-link, a.brush-link),
 :root[data-theme="bright"]
   :is(.filter-button, .preview-button, .player-button, .menu-item a,
@@ -284,7 +292,7 @@ body[data-moon-mode="blue"], .moon-preview[data-moon-mode="blue"] {
 
 /* States that used a glow need another visible signal */
 :root[data-theme="bright"] :is(.filter-button, .preview-button)[aria-current="page"],
-:root[data-theme="bright"] :is(.preview-button, .player-button, .theme-toggle)[aria-pressed="true"] {
+:root[data-theme="bright"] :is(.preview-button, .player-button)[aria-pressed="true"] {
   outline: 2px solid rgb(0, 96, 152);
   background: rgba(0, 96, 152, 0.12);
 }
